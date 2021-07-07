@@ -1,0 +1,4 @@
+// startParameter.offline=true
+
+include ':geo2wikipedia'
+

@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    public static final String serviceName = "en.wikipedia.org";
+    public static final String USER_AGENT = "AndroidGeo2WikipediaMap/0.0 (https://github.com/k3b/AndroidGeo2ArticlesMap)";
+    public static final String outFileName = "test2geo200.kmz";
+    public static final String outMimeType = "application/vnd.google-earth.kmz";
+
+Show articles near
+
+Service:
+[de.wikipedia.org_____] V [...]
+
+[X] Add Symbols to map
+[X] Add Icon to popup
+[X] Donot show this dialog again
+
+File Format:
+[kml.zip______________] V
+
+Select geo viewer:
+[Location Map Viewer   ] V [...]
+
+[OK] [Cancel]
+ -->
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/lbl_service"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/lbl_service"
+        android:labelFor="@+id/edit_service"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/edit_service"
+        android:layout_width="295dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="textUri"
+        android:autofillHints="@string/lbl_service"
+        app:layout_constraintStart_toStartOf="parent"
+
+        app:layout_constraintTop_toBottomOf="@+id/lbl_service"
+        app:layout_constraintTop_toTopOf="@+id/cmd_service_history" />
+
+    <ImageButton
+        android:id="@+id/cmd_service_history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:src="@android:drawable/ic_menu_more"
+        app:layout_constraintBottom_toBottomOf="@+id/cmd_service"
+        app:layout_constraintStart_toEndOf="@+id/edit_service"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_service"
+        app:layout_constraintTop_toTopOf="@+id/cmd_service" />
+
+    <Button
+        android:id="@+id/cmd_service"
+        android:layout_width="35dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/btn_popup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cmd_service_history"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_service"
+        tools:text="@string/btn_popup" />
+
+    <!-- -->
+
+
+    <CheckBox
+        android:id="@+id/chk_symbols_map"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/lbl_add_symbols_to_map"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_service" />
+
+    <CheckBox
+        android:id="@+id/chk_icon_popup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/lbl_add_icon_to_popup"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chk_symbols_map" />
+
+    <CheckBox
+        android:id="@+id/chk_hide"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/lbl_donot_show_this_dialog_again"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chk_icon_popup" />
+
+    <!-- -->
+
+    <TextView
+        android:id="@+id/lbl_format"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/lbl_file_format"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chk_hide" />
+
+    <Spinner
+        android:id="@+id/cb_format"
+        android:layout_width="296dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="@+id/edit_viewer"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_format" />
+
+    <TextView
+        android:id="@+id/lbl_viewer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/lbl_geo_viewer"
+        android:labelFor="@+id/edit_viewer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cb_format" />
+
+    <EditText
+        android:id="@+id/edit_viewer"
+        android:layout_width="295dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:ems="10"
+        android:inputType="text"
+        android:enabled="false"
+        android:autofillHints="@string/lbl_geo_viewer"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_viewer"
+        app:layout_constraintTop_toTopOf="@+id/cmd_viewer_history" />
+
+    <!-- -->
+
+    <ImageButton
+        android:id="@+id/cmd_viewer_history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/ic_menu_more"
+        app:layout_constraintBottom_toBottomOf="@+id/cmd_viewer"
+        app:layout_constraintStart_toStartOf="@+id/cmd_service_history"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_viewer"
+        app:layout_constraintTop_toTopOf="@+id/cmd_viewer" />
+
+    <Button
+        android:id="@+id/cmd_viewer"
+        android:layout_width="35dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/btn_popup"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cmd_service_history"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_viewer"
+        tools:text="@string/btn_popup" />
+
+    <!-- -->
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
