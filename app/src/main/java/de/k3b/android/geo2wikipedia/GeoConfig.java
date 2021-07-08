@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 by k3b.
  *
- * This file is part of geo2wikipedia https://github.com/k3b/VirtualCamera/
+ *  This file is part of AndroidGeo2ArticlesMap https://github.com/k3b/AndroidGeo2ArticlesMap .
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -18,13 +18,32 @@
  */
 package de.k3b.android.geo2wikipedia;
 
-public class GeoConfig {
-    public static final String serviceName = "en.wikipedia.org";
-    public static final String USER_AGENT = "AndroidGeo2WikipediaMap/0.0 (https://github.com/k3b/AndroidGeo2ArticlesMap)";
-    public static final String outFileName = "test2geo200.kmz";
-    public static final String outMimeType = "application/vnd.google-earth.kmz";
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
-    public static final int maxcount = 10;
+public class GeoConfig {
+    public final String serviceName = "en.wikipedia.org";
+    public final String USER_AGENT = "AndroidGeo2ArticlesMap/1.0 (https://github.com/k3b/AndroidGeo2ArticlesMap)";
+    public final String outFileName = "test2geo200.kmz";
+    public final String outMimeType = "application/vnd.google-earth.kmz";
+    public boolean showSettings = true;
+
+    public final int maxcount = 10;
+
+    public GeoConfig(Context context) {
+        SharedPreferences prefsInstance = PreferenceManager
+                .getDefaultSharedPreferences(context);
+        showSettings = prefsInstance.getBoolean("showSettings", showSettings);
+    }
+
+    public void save(Context context) {
+        SharedPreferences.Editor edit = PreferenceManager
+                .getDefaultSharedPreferences(context).edit();
+        edit.putBoolean("showSettings", showSettings);
+
+        edit.apply();
+    }
 
     /*                <data android:mimeType="application/vnd.google-earth.kml+xml" />
                 <data android:mimeType="application/vnd.google-earth.kmz" />

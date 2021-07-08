@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 by k3b.
  *
- * This file is part of geo2wikipedia https://github.com/k3b/VirtualCamera/
+ *  This file is part of AndroidGeo2ArticlesMap https://github.com/k3b/AndroidGeo2ArticlesMap .
  *
  * This program is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by
@@ -26,6 +26,9 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -47,7 +50,7 @@ import de.k3b.util.TempFileUtil;
 /**
  * Translates from ACTION_SEND(TO)/VIEW with geo-uri to ACTION_SEND(TO)/VIEW with kml/kmz/gpx... uri
  */
-public class Geo2WikipediaMapActivity extends Activity {
+public class Geo2ArticlesMapActivity extends Activity {
     private static final String TAG = "k3b.geo2wikipedia";
 
     private static final int PERMISSION_REQUEST_ID_FILE_WRITE = 23;
@@ -62,12 +65,15 @@ public class Geo2WikipediaMapActivity extends Activity {
 
     private Bundle lastSavedInstanceState = null;
 
+    private GeoConfig geoConfig = null;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        List<String> l = new ArrayList<>();
 
         checkPermissions(savedInstanceState);
+
+        // call onCreateEx() when permissions are granted
     }
 
     private void checkPermissions(Bundle savedInstanceState) {
@@ -144,16 +150,24 @@ public class Geo2WikipediaMapActivity extends Activity {
     private void onCreateEx(Bundle savedInstanceState) {
         this.lastSavedInstanceState = null;
 
+        geoConfig = new GeoConfig(this);
+
         GeoPointDto geoPointFromIntent = getGeoPointDtoFromIntent(getIntent());
 
-        if (geoPointFromIntent != null) {
-            File outFile = new File(
-                    createSharedOutDir(geoPointFromIntent.getLatitude(), geoPointFromIntent.getLongitude()),
-                    GeoConfig.outFileName);
-            createSharedUri(outFile);
-
-            new GeoLoadTask().execute(geoPointFromIntent);
+        if (geoPointFromIntent != null && !geoConfig.showSettings) {
+            queryDataFromArticleServer(geoPointFromIntent);
+        } else {
+            setContentView(R.layout.activity_choose_url);
         }
+    }
+
+    private void queryDataFromArticleServer(GeoPointDto geoPointFromIntent) {
+        File outFile = new File(
+                createSharedOutDir(geoPointFromIntent.getLatitude(), geoPointFromIntent.getLongitude()),
+                geoConfig.outFileName);
+        createSharedUri(outFile);
+
+        new GeoLoadTask().execute(geoPointFromIntent);
     }
 
     private void showResult(File outFile) {
@@ -166,7 +180,7 @@ public class Geo2WikipediaMapActivity extends Activity {
             newIntent.putExtra(Intent.EXTRA_STREAM, outUri);
         } else {
             // ACTION_SENDTO or ACTION_VIEW
-            newIntent.setDataAndTypeAndNormalize(outUri, GeoConfig.outMimeType);
+            newIntent.setDataAndTypeAndNormalize(outUri, geoConfig.outMimeType);
         }
 
         // start the image capture Intent
@@ -175,15 +189,15 @@ public class Geo2WikipediaMapActivity extends Activity {
     }
 
     private File saveGeoAsFile(GeoPointDto geoPointFromIntent) throws java.io.IOException {
-        String serviceName = GeoConfig.serviceName;
+        String serviceName = geoConfig.serviceName;
         Geo2WikipediaDownloadWithSymbolsService service = new Geo2WikipediaDownloadWithSymbolsService(
-                serviceName, GeoConfig.USER_AGENT, null)
-                .setMaxcount(GeoConfig.maxcount);
+                serviceName, geoConfig.USER_AGENT, null)
+                .setMaxcount(geoConfig.maxcount);
 
         String s = "";
         File outFile = new File(
                 createSharedOutDir(geoPointFromIntent.getLatitude(), geoPointFromIntent.getLongitude()),
-                GeoConfig.outFileName);
+                geoConfig.outFileName);
 
         service.saveAs(geoPointFromIntent.getLatitude(), geoPointFromIntent.getLongitude(),
                 outFile);
@@ -240,4 +254,39 @@ public class Geo2WikipediaMapActivity extends Activity {
             finish();
         }
     }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_choose_url, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        dialog2geoConfig();
+        int itemId = menuItem.getItemId();
+        if (itemId == R.id.cmd_cancel_pick) {
+            finish();
+            return true;
+        } else if (itemId == R.id.cmd_ok) {
+            GeoPointDto geoPointFromIntent = getGeoPointDtoFromIntent(getIntent());
+
+            if (geoPointFromIntent != null) {
+                queryDataFromArticleServer(geoPointFromIntent);
+            } else {
+                finish();
+            }
+
+            return true;
+        }
+        return super.onOptionsItemSelected(menuItem);
+
+    }
+
+    private void dialog2geoConfig() {
+        geoConfig.save(this);
+    }
+
 }

@@ -11,8 +11,13 @@
         android:supportsRtl="true"
          >
 
-        <activity android:name=".Geo2WikipediaMapActivity"
+        <activity android:name=".Geo2ArticlesMapActivity"
             android:label="@string/label_select_kml_viewer" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.SEND" />
@@ -34,16 +39,6 @@
 
                 <data android:scheme="geo" />
             </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".SettingsActivity"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
         </activity>
 
         <provider
