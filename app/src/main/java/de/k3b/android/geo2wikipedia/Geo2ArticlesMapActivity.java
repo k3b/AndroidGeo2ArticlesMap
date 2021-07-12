@@ -19,28 +19,24 @@
 
 package de.k3b.android.geo2wikipedia;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
 import java.lang.String;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import de.k3b.geo.api.GeoPointDto;
 import de.k3b.geo.io.Geo2WikipediaDownloadWithSymbolsService;
@@ -50,81 +46,50 @@ import de.k3b.util.TempFileUtil;
 /**
  * Translates from ACTION_SEND(TO)/VIEW with geo-uri to ACTION_SEND(TO)/VIEW with kml/kmz/gpx... uri
  */
-public class Geo2ArticlesMapActivity extends Activity {
+public class Geo2ArticlesMapActivity extends ParmissionBaseActivity {
     private static final String TAG = "k3b.geo2wikipedia";
-
-    private static final int PERMISSION_REQUEST_ID_FILE_WRITE = 23;
-    private static final String PERMISSION_FILE_WRITE = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-
-    private static final int PERMISSION_REQUEST_ID_INTERNET = 24;
-    private static final String PERMISSION_INTERNET = Manifest.permission.INTERNET;
 
     private static final int ACTION_SHOW_MAP = 26;
 
-    private static final int RESULT_NO_PERMISSIONS = -22;
-
-    private Bundle lastSavedInstanceState = null;
-
     private GeoConfig geoConfig = null;
+    private Gui gui = null;
 
-    @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    private class Gui {
+        private HistoryEditText mHistory;
+        private EditText editService;
+        private EditText editViewer;
+        private Button cmdService;
+        private Button cmdViewer;
+        private CheckBox chkSymbolMap;
+        private CheckBox chkIconPopup;
+        private CheckBox chkHide;
+        private Spinner cbFormat;
 
-        checkPermissions(savedInstanceState);
+        private void Gui() {
+            editService = findViewById(R.id.edit_service);
+            editViewer = findViewById(R.id.edit_viewer);
 
-        // call onCreateEx() when permissions are granted
-    }
+            cmdService = findViewById(R.id.cmd_service);
+            cmdViewer = findViewById(R.id.cmd_viewer);
 
-    private void checkPermissions(Bundle savedInstanceState) {
-        if (ActivityCompat.checkSelfPermission(this, PERMISSION_INTERNET)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestPermission(savedInstanceState, PERMISSION_INTERNET, PERMISSION_REQUEST_ID_INTERNET);
-            return;
+            chkSymbolMap = findViewById(R.id.chk_symbols_map);
+            chkIconPopup = findViewById(R.id.chk_icon_popup);
+            chkHide = findViewById(R.id.chk_hide);
+            cbFormat = findViewById(R.id.cb_format);
+
+            mHistory = new HistoryEditText(Geo2ArticlesMapActivity.this, new int[] {
+                    R.id.cmd_service_history,
+                    R.id.cmd_viewer_history} ,
+                    editService ,
+                    editViewer).setIncludeEmpty(true);
+
         }
-        if (ActivityCompat.checkSelfPermission(this, PERMISSION_FILE_WRITE)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestPermission(savedInstanceState, PERMISSION_FILE_WRITE, PERMISSION_REQUEST_ID_FILE_WRITE);
-            return;
+
+        private Gui load(GeoConfig geoConfig) {
+            return this;
         }
-
-        onCreateEx(savedInstanceState);
-    }
-
-    private void requestPermission(Bundle savedInstanceState, final String permission, final int requestCode) {
-        lastSavedInstanceState = savedInstanceState;
-        ActivityCompat.requestPermissions(this, new String[]{permission}, requestCode);
-    }
-
-    private boolean isGrantSuccess(int[] grantResults) {
-        return (grantResults != null)
-                && (grantResults.length > 0)
-                && (grantResults[0] == PackageManager.PERMISSION_GRANTED);
-    }
-
-    /**
-     * Callback received when a permissions request has been completed.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == PERMISSION_REQUEST_ID_INTERNET) {
-            onRequestPermissionsResult(grantResults);
-            return;
-        }
-        if (requestCode == PERMISSION_REQUEST_ID_FILE_WRITE) {
-            onRequestPermissionsResult(grantResults);
-            return;
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    private void onRequestPermissionsResult(int[] grantResults) {
-        if (isGrantSuccess(grantResults)) {
-            checkPermissions(lastSavedInstanceState);
-        } else {
-            Toast.makeText(this, R.string.permission_error, Toast.LENGTH_LONG).show();
-            setResult(RESULT_NO_PERMISSIONS, null);
-            finish();
+        private Gui save(GeoConfig geoConfig) {
+            return this;
         }
     }
 
@@ -147,9 +112,9 @@ public class Geo2ArticlesMapActivity extends Activity {
         }
     }
 
-    private void onCreateEx(Bundle savedInstanceState) {
-        this.lastSavedInstanceState = null;
-
+    @Override
+    protected void onCreateEx(Bundle savedInstanceState) {
+        super.onCreateEx(savedInstanceState);
         geoConfig = new GeoConfig(this);
 
         GeoPointDto geoPointFromIntent = getGeoPointDtoFromIntent(getIntent());
@@ -158,8 +123,11 @@ public class Geo2ArticlesMapActivity extends Activity {
             queryDataFromArticleServer(geoPointFromIntent);
         } else {
             setContentView(R.layout.activity_choose_url);
+            gui = new Gui().load(geoConfig);
+
         }
     }
+
 
     private void queryDataFromArticleServer(GeoPointDto geoPointFromIntent) {
         File outFile = new File(
@@ -265,7 +233,8 @@ public class Geo2ArticlesMapActivity extends Activity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
-        dialog2geoConfig();
+        gui.save(geoConfig);
+        geoConfig.save(this);
         int itemId = menuItem.getItemId();
         if (itemId == R.id.cmd_cancel_pick) {
             finish();
@@ -284,9 +253,4 @@ public class Geo2ArticlesMapActivity extends Activity {
         return super.onOptionsItemSelected(menuItem);
 
     }
-
-    private void dialog2geoConfig() {
-        geoConfig.save(this);
-    }
-
 }
