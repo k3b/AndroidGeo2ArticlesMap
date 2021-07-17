@@ -25,13 +25,15 @@ import androidx.annotation.NonNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
-import java.util.TreeMap;
 
-public class LanguageDefinition {
+public class LanguageDefinition implements Comparable<LanguageDefinition> {
     private static final String LANGUAGES_PROPERIES = "languages.properties";
     private final String url;
     private final String key;
@@ -53,6 +55,14 @@ public class LanguageDefinition {
         return key.split("_")[0];
     }
 
+    // LanguageDefinition.getLanguages(this).values() sorted by name
+    public static LanguageDefinition[] getLanguagesArray(Context context) throws IOException {
+        Map<String, LanguageDefinition> map = getLanguages(context);
+        List<LanguageDefinition> values = new ArrayList<>(map.values());
+        Collections.sort(values);
+        return values.toArray(new LanguageDefinition[map.size()]);
+    }
+
     public static Map<String, LanguageDefinition> getLanguages(Context context) throws IOException {
         try(InputStream in =  context.getAssets().open(LANGUAGES_PROPERIES)) {
             return LanguageDefinition.getLanguages(in);
@@ -70,7 +80,7 @@ public class LanguageDefinition {
     }
 
     public static Map<String, LanguageDefinition> getLanguages(Properties properties) {
-        LinkedHashMap<String, LanguageDefinition> result = new LinkedHashMap<String, LanguageDefinition>(200, 0.75f, true);
+        Map<String, LanguageDefinition> result = new HashMap<String, LanguageDefinition>();
 
         for (Map.Entry<Object, Object> kv : properties.entrySet()) {
             LanguageDefinition ld = new LanguageDefinition((String)kv.getKey(), (String)kv.getValue());
@@ -97,5 +107,10 @@ public class LanguageDefinition {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public int compareTo(LanguageDefinition o) {
+        return name.compareTo(o.name);
     }
 }

@@ -48,8 +48,8 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:1.7.7@jar'
     implementation 'org.slf4j:slf4j-simple:1.7.7'
     // implementation project(path: ':k3b-geoHelper')
-    implementation 'com.github.k3b:k3b-geoHelper:v1.1.8'
-    implementation 'com.github.k3b:k3b-geoHelperAndroid:v1.1.8'
+    implementation 'com.github.k3b:k3b-geoHelper:v1.1.9'
+    // implementation 'com.github.k3b:k3b-geoHelperAndroid:v1.1.9'
 
     implementation 'commons-io:commons-io:2.6'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

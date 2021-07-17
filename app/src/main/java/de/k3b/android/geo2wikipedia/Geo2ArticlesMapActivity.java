@@ -19,17 +19,23 @@
 
 package de.k3b.android.geo2wikipedia;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
@@ -37,6 +43,9 @@ import androidx.core.content.FileProvider;
 import java.lang.String;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import de.k3b.geo.api.GeoPointDto;
 import de.k3b.geo.io.Geo2WikipediaDownloadWithSymbolsService;
@@ -65,7 +74,7 @@ public class Geo2ArticlesMapActivity extends ParmissionBaseActivity {
         private CheckBox chkHide;
         private Spinner cbFormat;
 
-        private void Gui() {
+        private Gui() {
             editService = findViewById(R.id.edit_service);
             editViewer = findViewById(R.id.edit_viewer);
 
@@ -81,15 +90,75 @@ public class Geo2ArticlesMapActivity extends ParmissionBaseActivity {
                     R.id.cmd_service_history,
                     R.id.cmd_viewer_history} ,
                     editService ,
-                    editViewer).setIncludeEmpty(true);
+                    editViewer);
+            Button cmdService = findViewById(R.id.cmd_service);
+            cmdService.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showLanguagesPicker();
+                }
+            });
+        }
 
+        private Gui save(GeoConfig geoConfig) {
+            geoConfig.serviceName = editService.getText().toString();
+            geoConfig.showSettings = !chkHide.isChecked();
+
+            return this;
         }
 
         private Gui load(GeoConfig geoConfig) {
+            initServiceHistory();
+
+            if (geoConfig.serviceName != null) {
+                editService.setText(geoConfig.serviceName);
+            }
+            chkHide.setChecked(!geoConfig.showSettings);
             return this;
         }
-        private Gui save(GeoConfig geoConfig) {
-            return this;
+
+        private void initServiceHistory() {
+            List<String> serviceItems = mHistory.getHistoryItems(0);
+
+            if (serviceItems.size() == 0 || serviceItems.get(0).trim().isEmpty()) {
+                // remove empty items
+                while (serviceItems.size() > 0 && serviceItems.get(0).trim().isEmpty()) {
+                    serviceItems.remove(0);
+                }
+
+                // first start: add local, english and simple(english)
+                String language = Locale.getDefault().getLanguage();
+                try {
+                    Map<String, LanguageDefinition> languages = LanguageDefinition.getLanguages(Geo2ArticlesMapActivity.this);
+                    // added in reverse order
+                    includeService(
+                            languages.get("simple_v"), // last in list
+                            languages.get("simple_p"),
+                            languages.get("en_v"),
+                            languages.get("en_p"),
+                            languages.get(language + "_v"),
+                            languages.get(language + "_p")  // first in list
+                            );
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                serviceItems = mHistory.getHistoryItems(0);
+            }
+
+            if (serviceItems.size() > 0) {
+                editService.setText(serviceItems.get(0));
+            }
+        }
+
+        public void includeService(LanguageDefinition... services) {
+            String lastAdded = null;
+            for (LanguageDefinition service : services) {
+                if (service != null) {
+                    mHistory.addHistory(0, service.getUrl());
+                    lastAdded = service.getUrl();
+                }
+            }
+            editService.setText(lastAdded);
         }
     }
 
@@ -124,36 +193,41 @@ public class Geo2ArticlesMapActivity extends ParmissionBaseActivity {
         } else {
             setContentView(R.layout.activity_choose_url);
             gui = new Gui().load(geoConfig);
-
         }
     }
 
-
     private void queryDataFromArticleServer(GeoPointDto geoPointFromIntent) {
+        String name = createFileName(geoConfig.serviceName, geoPointFromIntent.getLatitude(), geoPointFromIntent.getLongitude());
         File outFile = new File(
-                createSharedOutDir(geoPointFromIntent.getLatitude(), geoPointFromIntent.getLongitude()),
-                geoConfig.outFileName);
+                createSharedOutDir(name),
+                name + geoConfig.outFileExtension);
         createSharedUri(outFile);
 
         new GeoLoadTask().execute(geoPointFromIntent);
     }
 
     private void showResult(File outFile) {
-        String action = getIntent().getAction();
+        if (outFile != null) {
+            String action = getIntent().getAction();
 
-        Uri outUri = createSharedUri(outFile);
-        Intent newIntent = new Intent(action)
-                .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        if (Intent.ACTION_SEND.compareTo(action) == 0) {
-            newIntent.putExtra(Intent.EXTRA_STREAM, outUri);
+            Uri outUri = createSharedUri(outFile);
+            Intent newIntent = new Intent(action)
+                    .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            if (Intent.ACTION_SEND.compareTo(action) == 0) {
+                newIntent.putExtra(Intent.EXTRA_STREAM, outUri);
+            } else {
+                // ACTION_SENDTO or ACTION_VIEW
+                newIntent.setDataAndTypeAndNormalize(outUri, geoConfig.outMimeType);
+            }
+
+            // start the image capture Intent
+            startActivityForResult(Intent.createChooser(
+                    newIntent, getString(R.string.app_name)), ACTION_SHOW_MAP);
         } else {
-            // ACTION_SENDTO or ACTION_VIEW
-            newIntent.setDataAndTypeAndNormalize(outUri, geoConfig.outMimeType);
+            //!!! TODO remove wrong uri from history
+            Toast.makeText(this, getString(R.string.service_error, geoConfig.serviceName),
+                    Toast.LENGTH_LONG).show();
         }
-
-        // start the image capture Intent
-        startActivityForResult(Intent.createChooser(
-                newIntent,getString(R.string.label_select_kml_viewer)), ACTION_SHOW_MAP);
     }
 
     private File saveGeoAsFile(GeoPointDto geoPointFromIntent) throws java.io.IOException {
@@ -162,10 +236,11 @@ public class Geo2ArticlesMapActivity extends ParmissionBaseActivity {
                 serviceName, geoConfig.USER_AGENT, null)
                 .setMaxcount(geoConfig.maxcount);
 
-        String s = "";
+        String name = createFileName(geoConfig.serviceName, geoPointFromIntent.getLatitude(), geoPointFromIntent.getLongitude());
+
         File outFile = new File(
-                createSharedOutDir(geoPointFromIntent.getLatitude(), geoPointFromIntent.getLongitude()),
-                geoConfig.outFileName);
+                createSharedOutDir(name),
+                name + geoConfig.outFileExtension);
 
         service.saveAs(geoPointFromIntent.getLatitude(), geoPointFromIntent.getLongitude(),
                 outFile);
@@ -193,16 +268,16 @@ public class Geo2ArticlesMapActivity extends ParmissionBaseActivity {
         return sharedDir;
     }
 
-    protected String createFileName(double latitude, double longitude) {
-        return latitude + "_" +longitude;
+    protected String createFileName(String serviceName, double latitude, double longitude) {
+        return serviceName+ "." + latitude + "_" +longitude;
     }
 
     protected Uri createSharedUri(File outFile) {
         return FileProvider.getUriForFile(this, "de.k3b.geo2wikipedia", outFile);
     }
 
-    private File createSharedOutDir(double latitude, double longitude) {
-        return new File(getSharedDir(), createFileName(latitude, longitude));
+    private File createSharedOutDir(String name) {
+        return new File(getSharedDir(), name);
     }
 
     @Override
@@ -252,5 +327,35 @@ public class Geo2ArticlesMapActivity extends ParmissionBaseActivity {
         }
         return super.onOptionsItemSelected(menuItem);
 
+    }
+
+    private void showLanguagesPicker() {
+        final ArrayAdapter<LanguageDefinition> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
+        try {
+            adapter.addAll(LanguageDefinition.getLanguagesArray(this));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.lbl_service)
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .setAdapter(adapter,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                onAddLanguagePick(adapter.getItem(which));
+                            }
+                        })
+                .show();
+    }
+
+    private void onAddLanguagePick(LanguageDefinition item) {
+        gui.includeService(item);
     }
 }

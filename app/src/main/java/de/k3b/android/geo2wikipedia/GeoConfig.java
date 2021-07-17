@@ -23,11 +23,11 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 public class GeoConfig {
-    public final String serviceName = "en.wikipedia.org";
+    public String serviceName = null; // i.e. "en.wikipedia.org";
     public final String USER_AGENT = "AndroidGeo2ArticlesMap/1.0 (https://github.com/k3b/AndroidGeo2ArticlesMap)";
-    public final String outFileName = "test2geo200.kmz";
+    public final String outFileExtension = ".kmz";
     public final String outMimeType = "application/vnd.google-earth.kmz";
-    public boolean showSettings = true;
+    public boolean showSettings = true; // true always show settings before query
 
     public final int maxcount = 10;
 
@@ -35,12 +35,14 @@ public class GeoConfig {
         SharedPreferences prefsInstance = PreferenceManager
                 .getDefaultSharedPreferences(context);
         showSettings = prefsInstance.getBoolean("showSettings", showSettings);
+        serviceName = prefsInstance.getString("serviceName", serviceName);
     }
 
     public void save(Context context) {
         SharedPreferences.Editor edit = PreferenceManager
                 .getDefaultSharedPreferences(context).edit();
         edit.putBoolean("showSettings", showSettings);
+        edit.putString("serviceName", serviceName);
 
         edit.apply();
     }

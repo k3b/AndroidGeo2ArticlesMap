@@ -12,7 +12,7 @@
          >
 
         <activity android:name=".Geo2ArticlesMapActivity"
-            android:label="@string/label_select_kml_viewer" >
+            android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

@@ -186,6 +186,6 @@ Select geo viewer:
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:visibility="invisible"
-        app:constraint_referenced_ids="chk_symbols_map,chk_icon_popup,chk_hide,lbl_format,cb_format,lbl_viewer,edit_viewer,cmd_viewer_history,cmd_viewer" />
+        app:constraint_referenced_ids="chk_symbols_map,chk_icon_popup,lbl_format,cb_format,lbl_viewer,edit_viewer,cmd_viewer_history,cmd_viewer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

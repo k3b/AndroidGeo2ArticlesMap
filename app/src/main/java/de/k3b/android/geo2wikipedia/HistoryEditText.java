@@ -65,23 +65,30 @@ public class HistoryEditText {
         return this;
     }
 
-    public void addHistory(int hisotryIndex, String... values) {
-        if ((hisotryIndex >= 0) && (hisotryIndex < mEditorHandlers.length) && (values != null) && (values.length > 0)) {
+    public void addHistory(int historyIndex, String... values) {
+        if ((historyIndex >= 0) && (historyIndex < mEditorHandlers.length) && (values != null) && (values.length > 0)) {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
             SharedPreferences.Editor edit = sharedPref.edit();
 
-            mEditorHandlers[hisotryIndex].include(sharedPref, edit, values);
+            mEditorHandlers[historyIndex].include(sharedPref, edit, values);
             edit.apply();
         } else {
             Log.w(LOG_CONTEXT, StringUtils.appendMessage(
                     "Cannot add",
                     getClass().getSimpleName(),
                     "addHistory(",
-                    hisotryIndex,
+                    historyIndex,
                     values,
                     ")")
                     .toString());
         }
+    }
+
+    public List<String> getHistoryItems(int historyIndex) {
+        if ((historyIndex >= 0) && (historyIndex < mEditorHandlers.length)) {
+            return mEditorHandlers[historyIndex].getHistoryItems();
+        }
+        return new ArrayList<>();
     }
 
     /**

@@ -19,9 +19,7 @@
  */
  -->
 <resources>
-    <string name="app_name">🗺 Geo to wikipedia article map</string>
-    <string name="permission_error">Missing permisions</string>
-    <string name="label_select_kml_viewer">Select kml viewer to open Wikipedia infos with</string>
+    <string name="app_name">Show Articles in Map</string>
     <string name="pref_settings_title">Settings</string>
     <string name="pref_some_dir">some dir</string>
     <string name="btn_popup">…</string>
@@ -31,4 +29,7 @@
     <string name="lbl_donot_show_this_dialog_again">Donot show this dialog again</string>
     <string name="lbl_file_format">File Format:</string>
     <string name="lbl_geo_viewer">Geo Viewer:</string>
+
+    <string name="permission_error">Missing permisions</string>
+    <string name="service_error">Service error in %1$s</string>
 </resources>
