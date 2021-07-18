@@ -20,16 +20,16 @@
  -->
 <resources>
     <string name="app_name">Show Articles in Map</string>
+
+    <!--- Settings -->
     <string name="pref_settings_title">Settings</string>
-    <string name="pref_some_dir">some dir</string>
     <string name="btn_popup">…</string>
     <string name="lbl_service">Service:</string>
-    <string name="lbl_add_symbols_to_map">Add Symbols to Map</string>
-    <string name="lbl_add_icon_to_popup">Add Icon to popup</string>
     <string name="lbl_donot_show_this_dialog_again">Donot show this dialog again</string>
-    <string name="lbl_file_format">File Format:</string>
-    <string name="lbl_geo_viewer">Geo Viewer:</string>
+    <string name="lbl_test">Test</string>
 
-    <string name="permission_error">Missing permisions</string>
-    <string name="service_error">Service error in %1$s</string>
+    <!--- error handling -->
+    <string name="error_permission">Missing permisions</string>
+    <string name="error_service">Service error in %1$s</string>
+    <string name="error_location_map_viewer_not_found">You must also install LocationMapViewer</string>
 </resources>

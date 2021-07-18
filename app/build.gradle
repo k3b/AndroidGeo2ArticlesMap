@@ -4,7 +4,7 @@ android {
     compileSdkVersion 29
 
     defaultConfig {
-        applicationId "de.k3b.android.geo2wikipedia"
+        applicationId "de.k3b.android.geo2articlesmap"
         // Android 4.4 (api19)
         minSdkVersion 19
         targetSdkVersion 29

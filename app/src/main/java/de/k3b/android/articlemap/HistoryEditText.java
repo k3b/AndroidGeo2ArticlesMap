@@ -17,7 +17,7 @@
  * this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-package de.k3b.android.geo2wikipedia;
+package de.k3b.android.articlemap;
 
 import android.annotation.TargetApi;
 import android.content.Context;

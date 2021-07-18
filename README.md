@@ -7,17 +7,16 @@ and you want to know: what is near this place that has an article in [wikipedia]
 ( or [wikivoyage](https://en.wikivoyage.org/) ). 
 
 In your navigation app select "view in external app" (or "send location to" or "share location with" or ...) 
-choose "Geo2ArticlesMap" and you will get a map with marks for articles. If you click on a mark you get
+choose "Show Articles in Map" and you will get a map with marks for articles. If you click on a mark you get
 a small popup with the article summary and a link to the wikipedia article.  
 
 You can get geo-infos from these opensource apps
 
-* navigation: [OsmAnd](https://f-droid.org/en/packages/net.osmand.plus/), 
-* public transportation: [Transportr](https://f-droid.org/en/packages/de.grobox.liberario) or [oeffi](https://f-droid.org/en/packages/de.schildbach.oeffi)
+* navigation: [OsmAnd](https://f-droid.org/packages/net.osmand.plus/),
+* public transportation: [Transportr](https://f-droid.org/packages/de.grobox.liberario) or [oeffi](https://f-droid.org/packages/de.schildbach.oeffi)
 * geo-caching [c:geo](https://apt.izzysoft.de/fdroid/index/apk/cgeo.geocaching)
-* translate postal adress to geo [Acastus Photon ](https://f-droid.org/en/packages/name.gdr.acastus_photon)
-* Share your current positon [LocationShare](https://f-droid.org/en/packages/ca.cmetcalfe.locationshare) or [My Position](https://f-droid.org/en/packages/net.mypapit.mobile.myposition)
-* Translates google-maps / openstreemap links in a browser to a geo-uri: [Open Link With](https://f-droid.org/en/packages/com.tasomaniac.openwith.floss)
+* translate postal adress to geo [Acastus Photon ](https://f-droid.org/packages/name.gdr.acastus_photon)
+* Share your current positon [LocationShare](https://f-droid.org/packages/ca.cmetcalfe.locationshare) or [My Position](https://f-droid.org/packages/net.mypapit.mobile.myposition)
 * and probably many others.......
 
 ## Technical Description 
@@ -25,9 +24,9 @@ You can get geo-infos from these opensource apps
 Technically speaking the AndroidGeo2ArticlesMap app 
 * hooks into the android system for view/send/share events for geographic coordinates (also known as [geo: - uri](https://en.wikipedia.org/wiki/Geo_URI_scheme)), 
 * [asks wikipedia for article infos near this location](https://en.wikipedia.org/w/api.php),
-* translates the articles found into a standardformat ([kmz](https://en.wikipedia.org/wiki/Keyhole_Markup_Language) or [kml](https://en.wikipedia.org/wiki/Keyhole_Markup_Language) or [gpx](https://en.wikipedia.org/wiki/GPS_Exchange_Format) or ...)
-* and asks android to show the generated kmz (or kml, or gpx) file
-* The result is shown in [Location Map Viewer](https://f-droid.org/en/packages/de.k3b.android.locationMapViewer) (or any other installed app that understands kmz (or kml or gpx or ....)) 
+* translates the articles found into a standardformat ([kmz](https://en.wikipedia.org/wiki/Keyhole_Markup_Language) 
+* and asks android to show the generated kmz file
+* The result is shown in [Location Map Viewer](https://f-droid.org/en/packages/de.k3b.android.locationMapViewer) (or any other installed app that understands kmz) 
 
 ## Legal stuff
 

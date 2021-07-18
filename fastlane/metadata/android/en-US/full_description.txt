@@ -1,0 +1,20 @@
+<p>Note: You must also install <a href="https://f-droid.org/packages/de.k3b.android.locationMapViewer">Location Map Viewer</a> to display the results.</p>
+<p>This app adds the option <em>Show Articles in Map</em> to any app that can shown/send/share a geo location or <strong>geo-uri</strong> .</p>
+<p>It hooks into the android system, asks wikipedia and shows the results in <a href="https://f-droid.org/packages/de.k3b.android.locationMapViewer">Location Map Viewer</a>
+(or any other installed app that understands the format 'kmz').</p>
+<p><em>Location Map Viewer</em> shows a map with bubbles (or article-icons if available) for every wikipedia article found.</p>
+<p>If you click on a bubble you get a popup with a short article description and a button that links to the full article.</p>
+<p>Here are some f-droid apps that are compatible with <em>Show Articles in Map</em></p>
+<ul>
+<li>navigation: <a href="https://f-droid.org/packages/net.osmand.plus/">OsmAnd</a>,</li>
+<li>public transportation: <a href="https://f-droid.org/packages/de.grobox.liberario">Transportr</a> or <a href="https://f-droid.org/packages/de.schildbach.oeffi">oeffi</a></li>
+<li>translate postal adress to geo <a href="https://f-droid.org/packages/name.gdr.acastus_photon">Acastus Photon </a></li>
+<li>Share your current positon <a href="https://f-droid.org/packages/ca.cmetcalfe.locationshare">LocationShare</a> or <a href="https://f-droid.org/packages/net.mypapit.mobile.myposition">My Position</a></li>
+</ul>
+<hr />
+<p>Required Android Permissions:</p>
+<ul>
+<li>INTERNET: to download article data from wikipedia or wikivoyage Server</li>
+<li>WRITE_EXTERNAL_STORAGE to write the result data to a 'kmz' file.
+.</li>
+</ul>

@@ -79,27 +79,6 @@ Select geo viewer:
 
     <!-- -->
 
-
-    <CheckBox
-        android:id="@+id/chk_symbols_map"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/lbl_add_symbols_to_map"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_service" />
-
-    <CheckBox
-        android:id="@+id/chk_icon_popup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/lbl_add_icon_to_popup"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chk_symbols_map" />
-
     <CheckBox
         android:id="@+id/chk_hide"
         android:layout_width="wrap_content"
@@ -108,84 +87,18 @@ Select geo viewer:
         android:layout_marginTop="8dp"
         android:text="@string/lbl_donot_show_this_dialog_again"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chk_icon_popup" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_service" />
 
-    <!-- -->
-
-    <TextView
-        android:id="@+id/lbl_format"
+    <!-- visible when app is called without geo uri -->
+    <Button
+        android:id="@+id/cmd_test"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/lbl_file_format"
+        android:text="@string/lbl_test"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chk_hide" />
-
-    <Spinner
-        android:id="@+id/cb_format"
-        android:layout_width="296dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintEnd_toEndOf="@+id/edit_viewer"
-        app:layout_constraintTop_toBottomOf="@+id/lbl_format" />
-
-    <TextView
-        android:id="@+id/lbl_viewer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/lbl_geo_viewer"
-        android:labelFor="@+id/edit_viewer"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cb_format" />
-
-    <EditText
-        android:id="@+id/edit_viewer"
-        android:layout_width="295dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:inputType="text"
-        android:enabled="false"
-        android:autofillHints="@string/lbl_geo_viewer"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lbl_viewer"
-        app:layout_constraintTop_toTopOf="@+id/cmd_viewer_history" />
-
-    <!-- -->
-
-    <ImageButton
-        android:id="@+id/cmd_viewer_history"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_menu_more"
-        app:layout_constraintBottom_toBottomOf="@+id/cmd_viewer"
-        app:layout_constraintStart_toStartOf="@+id/cmd_service_history"
-        app:layout_constraintTop_toBottomOf="@+id/lbl_viewer"
-        app:layout_constraintTop_toTopOf="@+id/cmd_viewer" />
-
-    <Button
-        android:id="@+id/cmd_viewer"
-        android:layout_width="35dp"
-        android:layout_height="43dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:text="@string/btn_popup"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cmd_service_history"
-        app:layout_constraintTop_toBottomOf="@+id/lbl_viewer"
-        tools:text="@string/btn_popup" />
-
-    <!-- -->
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_not_implemented"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        app:constraint_referenced_ids="chk_symbols_map,chk_icon_popup,lbl_format,cb_format,lbl_viewer,edit_viewer,cmd_viewer_history,cmd_viewer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

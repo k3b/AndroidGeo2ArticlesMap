@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?><!--
+/*
+ * These Texts will be shown as programdescription in the fdroid app store
+ * https://f-droid.org/app/de.k3b.android.androFotoFinder.
+ *
+ * the content will be copied to .../fastlane/metadata/android/*.txt
+ *
+ * This file is part of "A Photo Manager" (A(ndro)FotoFinder).
+ *
+ * This program is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ * FOR A PARTICULAR PURPOSE. See the GNU General Public License
+ * for more details.
+ *
+ * You should have received a copy of the GNU General Public License along with
+ * this program. If not, see <http://www.gnu.org/licenses/>
+ */
+ -->
+<resources>
+
+    <!-- Optional: This becomes .../fastlane/metadata/android/title.txt.
+      See https://f-droid.org/docs/Build_Metadata_Reference/#Name
+      Example: If spanish title="Manejador de fotos" then the App name/title in F-Droid-store becomes "A Photo Manager (Manejador de fotos)" -->
+    <string name="title">Show Articles in Map</string>
+
+    <!-- This becomes .../fastlane/metadata/android/short_description.txt.
+    See https://f-droid.org/docs/Build_Metadata_Reference/#Summary -->
+    <string name="short_description">Show articles from Wikipedia near a given location in an interactive map.</string>
+
+    <!-- This becomes .../fastlane/metadata/android/full_description.txt.
+    See https://f-droid.org/docs/Build_Metadata_Reference/#Description -->
+	<string name="full_description"><![CDATA["
+Note: You must also install [Location Map Viewer](https://f-droid.org/packages/de.k3b.android.locationMapViewer) to display the results.
+
+This app adds the option *Show Articles in Map* to any app that can shown/send/share a geo location or **geo-uri** .
+
+It hooks into the android system, asks wikipedia and shows the results in [Location Map Viewer](https://f-droid.org/packages/de.k3b.android.locationMapViewer)
+(or any other installed app that understands the format 'kmz').
+
+*Location Map Viewer* shows a map with bubbles (or article-icons if available) for every wikipedia article found.
+
+If you click on a bubble you get a popup with a short article description and a button that links to the full article.
+
+Here are some f-droid apps that are compatible with *Show Articles in Map*
+
+* navigation: [OsmAnd](https://f-droid.org/packages/net.osmand.plus/),
+* public transportation: [Transportr](https://f-droid.org/packages/de.grobox.liberario) or [oeffi](https://f-droid.org/packages/de.schildbach.oeffi)
+* translate postal adress to geo [Acastus Photon ](https://f-droid.org/packages/name.gdr.acastus_photon)
+* Share your current positon [LocationShare](https://f-droid.org/packages/ca.cmetcalfe.locationshare) or [My Position](https://f-droid.org/packages/net.mypapit.mobile.myposition)
+
+----
+
+Required Android Permissions:
+
+* INTERNET: to download article data from wikipedia or wikivoyage Server
+* WRITE_EXTERNAL_STORAGE to write the result data to a 'kmz' file.
+.
+"]]></string>
+</resources>

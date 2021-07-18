@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU General Public License along with
  * this program. If not, see <http://www.gnu.org/licenses/>
  */
-package de.k3b.android.geo2wikipedia;
+package de.k3b.android.articlemap;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -29,7 +29,7 @@ public class GeoConfig {
     public final String outMimeType = "application/vnd.google-earth.kmz";
     public boolean showSettings = true; // true always show settings before query
 
-    public final int maxcount = 10;
+    public final int maxcount = 25;
 
     public GeoConfig(Context context) {
         SharedPreferences prefsInstance = PreferenceManager
@@ -46,17 +46,4 @@ public class GeoConfig {
 
         edit.apply();
     }
-
-    /*                <data android:mimeType="application/vnd.google-earth.kml+xml" />
-                <data android:mimeType="application/vnd.google-earth.kmz" />
-                <data android:mimeType="application/xml+kml" />
-                <data android:mimeType="application/xml+gpx" />
-                <data android:mimeType="application/xml+poi" />
-                <data android:mimeType="application/zip+xml+kml" />
-                <data android:mimeType="application/zip+xml+gpx" />
-                <data android:mimeType="application/zip+xml+poi" />
-
-
-
-*/
 }
