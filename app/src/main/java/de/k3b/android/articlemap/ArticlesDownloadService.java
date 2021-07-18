@@ -79,19 +79,24 @@ public class ArticlesDownloadService extends DownloadGpxKmlZipWithSymbolsService
         return hc.getInputStream();
     }
 
-    private List<IGeoPointInfo> getGeoPointInfos(Object lat, Object lon) throws IOException {
+    private List<IGeoPointInfo> getGeoPointInfos(Object lat, Object lon) {
         String urlString = this.getQueryGeoUrlString(lat, lon);
         Log.i(TAG,"downloading from " + urlString);
-        InputStream inputStream = this.getInputStream(urlString);
-        GpxReader<IGeoPointInfo> parser = new GpxReader<>();
 
-        List<IGeoPointInfo> points = parser.getTracks(new InputSource(inputStream));
-        return points;
+        try (InputStream inputStream = this.getInputStream(urlString) ){
+            GpxReader<IGeoPointInfo> parser = new GpxReader<>();
+            List<IGeoPointInfo> points = parser.getTracks(new InputSource(inputStream));
+            return points;
+        } catch (Exception ex) {
+            Log.e(TAG, "cannot read from '" + this.serviceName
+                    + "' using '" + urlString + "'" ,ex);
+            return null;
+        }
     }
 
     public List<IGeoPointInfo> saveAs(Object lat, Object lon, File out) throws IOException {
         List<IGeoPointInfo> points = getGeoPointInfos(lat, lon);
-        if (points.size() > 0) {
+        if (points != null && points.size() > 0) {
             saveAs(points, out);
         }
         return points;

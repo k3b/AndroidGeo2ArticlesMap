@@ -66,7 +66,9 @@ public class HistoryEditText {
     }
 
     public void addHistory(int historyIndex, String... values) {
-        if ((historyIndex >= 0) && (historyIndex < mEditorHandlers.length) && (values != null) && (values.length > 0)) {
+        EditorHandler editor = getEditor(historyIndex);
+
+        if ((editor != null) && (values != null) && (values.length > 0)) {
             SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
             SharedPreferences.Editor edit = sharedPref.edit();
 
@@ -84,8 +86,16 @@ public class HistoryEditText {
         }
     }
 
-    public List<String> getHistoryItems(int historyIndex) {
+    public EditorHandler getEditor(int historyIndex) {
         if ((historyIndex >= 0) && (historyIndex < mEditorHandlers.length)) {
+            return mEditorHandlers[historyIndex];
+        }
+        return null;
+    }
+
+    public List<String> getHistoryItems(int historyIndex) {
+        EditorHandler editor = getEditor(historyIndex);
+        if (editor != null) {
             return mEditorHandlers[historyIndex].getHistoryItems();
         }
         return new ArrayList<>();
@@ -146,14 +156,13 @@ public class HistoryEditText {
     /** ContextActionBar for one EditText */
     protected class EditorHandler implements View.OnLongClickListener, View.OnClickListener  {
         private final EditText mEditor;
-        private final ImageButton mCmd;
         private final String mId;
 
         public EditorHandler(String id, EditText editor, int imageButtonResourceId) {
             mId = id;
             mEditor = editor;
 
-            mCmd = (imageButtonResourceId != NO_ID) ? (ImageButton) editor.getRootView().findViewById(imageButtonResourceId) : null;
+            ImageButton mCmd = (imageButtonResourceId != NO_ID) ? (ImageButton) editor.getRootView().findViewById(imageButtonResourceId) : null;
 
             if (mCmd == null) {
                 mEditor.setOnLongClickListener(this);
@@ -170,8 +179,7 @@ public class HistoryEditText {
         protected void showHistory() {
             List<String> items = getHistoryItems();
 
-            PopupMenu popup = null;
-            popup = new PopupMenu(mContext, mEditor);
+            PopupMenu popup = new PopupMenu(mContext, mEditor);
             Menu root = popup.getMenu();
             int len = items.size();
             if (len > MENU_COUNT_MAX) len = MENU_COUNT_MAX;
@@ -218,11 +226,24 @@ public class HistoryEditText {
             include(sharedPref, edit, mEditor.getText().toString().trim());
         }
 
+        public void saveHistory(List<String> history) {
+            SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(mContext);
+            SharedPreferences.Editor edit = sharedPref.edit();
+
+            saveHistory(edit, history);
+
+            edit.apply();
+        }
+
+        private void saveHistory(SharedPreferences.Editor edit, List<String> history) {
+            String result = toString(history);
+            edit.putString(mId, result);
+        }
+
         private void include(SharedPreferences sharedPref, SharedPreferences.Editor edit, String... additionalValues) {
             List<String> history = getHistory(sharedPref);
             history = include(history, additionalValues);
-            String result = toString(history);
-            edit.putString(mId, result);
+            saveHistory(edit, history);
         }
 
         private List<String> asList(String serialistedListElements) {
@@ -236,7 +257,7 @@ public class HistoryEditText {
 
         private List<String> include(List<String> history_, String... newValues) {
             if ((newValues != null) && (newValues.length > 0)) {
-                List<String> history = new ArrayList<String>(history_);
+                List<String> history = new ArrayList<>(history_);
                 for (String newValue : newValues) {
                     if (newValue != null) {
                         history.remove(newValue);

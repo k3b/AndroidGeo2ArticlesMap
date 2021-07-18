@@ -8,8 +8,8 @@
 <ul>
 <li>navigation: <a href="https://f-droid.org/packages/net.osmand.plus/">OsmAnd</a>,</li>
 <li>public transportation: <a href="https://f-droid.org/packages/de.grobox.liberario">Transportr</a> or <a href="https://f-droid.org/packages/de.schildbach.oeffi">oeffi</a></li>
-<li>translate postal adress to geo <a href="https://f-droid.org/packages/name.gdr.acastus_photon">Acastus Photon </a></li>
-<li>Share your current positon <a href="https://f-droid.org/packages/ca.cmetcalfe.locationshare">LocationShare</a> or <a href="https://f-droid.org/packages/net.mypapit.mobile.myposition">My Position</a></li>
+<li>translate postal address to geo <a href="https://f-droid.org/packages/name.gdr.acastus_photon">Acastus Photon </a></li>
+<li>Share your current position <a href="https://f-droid.org/packages/ca.cmetcalfe.locationshare">LocationShare</a> or <a href="https://f-droid.org/packages/net.mypapit.mobile.myposition">My Position</a></li>
 </ul>
 <hr />
 <p>Required Android Permissions:</p>

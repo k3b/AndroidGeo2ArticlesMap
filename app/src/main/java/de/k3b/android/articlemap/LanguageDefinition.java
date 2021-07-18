@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -42,7 +43,7 @@ public class LanguageDefinition implements Comparable<LanguageDefinition> {
     public LanguageDefinition(String key, String value) {
         String languageID = getLanguage(key);
 
-        this.url = languageID + (isWikipedia(key) ? ".wikpedia.org" : ".wikivoyage.org");
+        this.url = languageID + (isWikipedia(key) ? ".wikipedia.org" : ".wikivoyage.org");
         this.key = key;
         this.name = languageID + " " + value + " " + this.getUrl();
     }
@@ -75,12 +76,12 @@ public class LanguageDefinition implements Comparable<LanguageDefinition> {
         String language = Locale.getDefault().getLanguage();
         Properties properties = new Properties();
         // note: Properties standard use iso-8859-1. However this app uses utf8
-        properties.load(new InputStreamReader(in, "UTF8"));
+        properties.load(new InputStreamReader(in, StandardCharsets.UTF_8));
         return getLanguages(properties);
     }
 
     public static Map<String, LanguageDefinition> getLanguages(Properties properties) {
-        Map<String, LanguageDefinition> result = new HashMap<String, LanguageDefinition>();
+        Map<String, LanguageDefinition> result = new HashMap<>();
 
         for (Map.Entry<Object, Object> kv : properties.entrySet()) {
             LanguageDefinition ld = new LanguageDefinition((String)kv.getKey(), (String)kv.getValue());

@@ -12,7 +12,7 @@ Service:
 
 [X] Add Symbols to map
 [X] Add Icon to popup
-[X] Donot show this dialog again
+[X] Do not show this dialog again
 
 File Format:
 [kml.zip______________] V
@@ -97,7 +97,6 @@ Select geo viewer:
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="@string/lbl_test"
-        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chk_hide" />
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Author: k3b
-# License: GPLv3 or laterwhere
+# License: GPLv3 or later
 
 # convert [prj-root]/app/src/debug/res/values-zz/fdroid.xml
 # to [prj-root]/fastlane/metadata/android/zz/*.txt
@@ -13,12 +13,12 @@ import re
 from xml.etree import ElementTree
 
 #--------------------------------------
-# configuration: set constant to None if you do not want to use the featrue
+# configuration: set constant to None if you do not want to use the feature
 
 # if not None replace title becomes DEFAULT_APP_TITLE (translation)
 DEFAULT_APP_TITLE = "A Photo Manager"
 
-# all paths are relativ to [root]/fastlane/*.py
+# all paths are relative to [root]/fastlane/*.py
 
 # mandatory: translations come from [prj]/app/src/debug/res/values-[locale]/fdroid.xml
 FD_SRC_PATH_ROOT = '../app/src/debug/res'

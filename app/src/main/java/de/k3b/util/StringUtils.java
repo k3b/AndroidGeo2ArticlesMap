@@ -149,7 +149,7 @@ public class StringUtils {
     private static StringBuilder append(StringBuilder resultOrNull, Object[] parameters) {
         StringBuilder result = (resultOrNull == null) ? new StringBuilder() : resultOrNull;
 
-        if ((result != null) && (parameters != null) && (parameters.length > 0)) {
+        if ((parameters != null) && (parameters.length > 0)) {
             result.append("(");
             for (final Object param : parameters) {
                 if (param != null) {

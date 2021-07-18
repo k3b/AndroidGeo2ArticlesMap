@@ -22,6 +22,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import de.k3b.geo.api.GeoPointDto;
+
 public class GeoConfig {
     public String serviceName = null; // i.e. "en.wikipedia.org";
     public final String USER_AGENT = "AndroidGeo2ArticlesMap/1.0 (https://github.com/k3b/AndroidGeo2ArticlesMap)";
@@ -31,11 +33,17 @@ public class GeoConfig {
 
     public final int maxcount = 25;
 
+    // Berlin, Gemany, Siegessäule
+    public final GeoPointDto demoUri = new GeoPointDto().setLatLon(52.51451,13.35011);
+    public boolean inDemoMode = false;
+
     public GeoConfig(Context context) {
         SharedPreferences prefsInstance = PreferenceManager
                 .getDefaultSharedPreferences(context);
         showSettings = prefsInstance.getBoolean("showSettings", showSettings);
         serviceName = prefsInstance.getString("serviceName", serviceName);
+        inDemoMode = prefsInstance.getBoolean("inDemoMode", inDemoMode);
+
     }
 
     public void save(Context context) {
@@ -43,6 +51,7 @@ public class GeoConfig {
                 .getDefaultSharedPreferences(context).edit();
         edit.putBoolean("showSettings", showSettings);
         edit.putString("serviceName", serviceName);
+        edit.putBoolean("inDemoMode", inDemoMode);
 
         edit.apply();
     }

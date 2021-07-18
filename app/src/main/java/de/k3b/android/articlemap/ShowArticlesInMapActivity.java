@@ -20,6 +20,7 @@
 package de.k3b.android.articlemap;
 
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -41,13 +42,13 @@ import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 import de.k3b.geo.api.GeoPointDto;
 import de.k3b.geo.api.IGeoPointInfo;
-import de.k3b.geo.io.Geo2WikipediaDownloadWithSymbolsService;
 import de.k3b.geo.io.GeoUri;
 import de.k3b.util.TempFileUtil;
 
@@ -63,13 +64,12 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
     private class Gui {
         private final HistoryEditText mHistory;
         private final EditText editService;
-        private final Button cmdService;
         private final CheckBox chkHide;
 
         private Gui() {
             editService = findViewById(R.id.edit_service);
 
-            cmdService = findViewById(R.id.cmd_service);
+            Button cmdService = findViewById(R.id.cmd_service);
             cmdService.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -81,6 +81,14 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
             mHistory = new HistoryEditText(ShowArticlesInMapActivity.this, new int[] {
                     R.id.cmd_service_history} ,
                     editService );
+
+            Button cmdTest = findViewById(R.id.cmd_test);
+            cmdTest.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onTestSettings();
+                }
+            });
         }
 
         private Gui save(GeoConfig geoConfig) {
@@ -103,12 +111,8 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
         private void initServiceHistory() {
             List<String> serviceItems = getServiceHistoryItems();
 
-            if (serviceItems.isEmpty() || serviceItems.get(0).trim().isEmpty()) {
+            if (serviceItems.isEmpty()) {
                 // first start: add local, english and simple(english)
-                while (!serviceItems.isEmpty() && serviceItems.get(0).trim().isEmpty()) {
-                    // remove empty items
-                    serviceItems.remove(0);
-                }
 
                 String language = Locale.getDefault().getLanguage();
                 try {
@@ -134,7 +138,21 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
         }
 
         private List<String> getServiceHistoryItems() {
-            return mHistory.getHistoryItems(0);
+            List<String> historyItems = new ArrayList<>(mHistory.getHistoryItems(0));
+
+            // remove empty entries
+            boolean modified = false;
+            for (int i = historyItems.size() - 1; i >= 0; i--) {
+                String item = historyItems.get(i);
+                if (item == null || item.trim().length() == 0) {
+                    historyItems.remove(i);
+                    modified = true;
+                }
+            }
+            if (modified) {
+                mHistory.getEditor(0).saveHistory(historyItems);
+            }
+            return historyItems;
         }
 
         public void includeService(LanguageDefinition... services) {
@@ -149,7 +167,10 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
         }
 
         public void excludeLastService() {
-            getServiceHistoryItems().remove(0);
+            List<String> historyItems = getServiceHistoryItems();
+            historyItems.remove(0);
+            mHistory.getEditor(0).saveHistory(historyItems);
+
             initServiceHistory();
         }
     }
@@ -182,6 +203,9 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
 
             List<IGeoPointInfo> result = service.saveAs(
                     geoPointFromIntent.getLatitude(), geoPointFromIntent.getLongitude(),outFile);
+            if (result == null) {
+                return null;
+            }
             return outFile;
         }
 
@@ -199,14 +223,15 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
         GeoPointDto geoPointFromIntent = getGeoPointDtoFromIntent(getIntent());
 
         if (geoPointFromIntent != null && !geoConfig.showSettings) {
-            queryDataFromArticleServer(geoPointFromIntent);
+            queryDataFromArticleServer(geoPointFromIntent, false);
         } else {
             setContentView(R.layout.activity_choose_url);
             gui = new Gui().load(geoConfig);
         }
     }
 
-    private void queryDataFromArticleServer(GeoPointDto geoPointFromIntent) {
+    private void queryDataFromArticleServer(GeoPointDto geoPointFromIntent, boolean inDemoMode) {
+        geoConfig.inDemoMode = inDemoMode;
         String name = createFileName(geoConfig.serviceName, geoPointFromIntent.getLatitude(), geoPointFromIntent.getLongitude());
         File outFile = new File(
                 createSharedOutDir(name),
@@ -220,10 +245,11 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
     private void showResult(File outFile) {
         if (outFile != null) {
             // success: forward same Action/Mime to final kmz receiver
-            String action = getIntent().getAction();
+            Intent intent = getIntent();
+            String action = intent == null ? null : intent.getAction();
 
             Uri outUri = createSharedUri(outFile);
-            Intent newIntent = new Intent(action)
+            Intent newIntent = new Intent(action == null ? Intent.ACTION_VIEW : action)
                     .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             if (Intent.ACTION_SEND.compareTo(action) == 0) {
                 newIntent.putExtra(Intent.EXTRA_STREAM, outUri);
@@ -232,8 +258,20 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
                 newIntent.setDataAndTypeAndNormalize(outUri, geoConfig.outMimeType);
             }
 
-            // start the image capture Intent
-            startActivity(newIntent);
+            try {
+                // start the image capture Intent
+                startActivity(newIntent);
+
+                if (!geoConfig.inDemoMode) {
+                    finish();
+                }
+            } catch (ActivityNotFoundException ex) {
+                String message = getString(R.string.error_location_map_viewer_not_found);
+                Toast.makeText(this, message,
+                        Toast.LENGTH_LONG).show();
+                Log.e(TAG, intent.toUri(Intent.URI_INTENT_SCHEME));
+                Log.e(TAG, message);
+            }
 
         } else {
             Toast.makeText(this, getString(R.string.error_service, geoConfig.serviceName),
@@ -301,7 +339,7 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
             GeoPointDto geoPointFromIntent = getGeoPointDtoFromIntent(getIntent());
 
             if (geoPointFromIntent != null) {
-                queryDataFromArticleServer(geoPointFromIntent);
+                queryDataFromArticleServer(geoPointFromIntent, false);
             } else {
                 finish();
             }
@@ -310,6 +348,11 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
         }
         return super.onOptionsItemSelected(menuItem);
 
+    }
+
+    private void onTestSettings() {
+        save();
+        queryDataFromArticleServer(geoConfig.demoUri, true);
     }
 
     private void save() {
