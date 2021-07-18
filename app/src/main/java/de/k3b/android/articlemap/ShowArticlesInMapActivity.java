@@ -245,11 +245,14 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
     private void showResult(File outFile) {
         if (outFile != null) {
             // success: forward same Action/Mime to final kmz receiver
-            Intent intent = getIntent();
-            String action = intent == null ? null : intent.getAction();
+            Intent oldIntent = getIntent();
+            String action = oldIntent == null ? null : oldIntent.getAction();
+            if (action == null || Intent.ACTION_MAIN.compareTo(action) == 0) {
+                action = Intent.ACTION_VIEW;
+            }
 
             Uri outUri = createSharedUri(outFile);
-            Intent newIntent = new Intent(action == null ? Intent.ACTION_VIEW : action)
+            Intent newIntent = new Intent(action)
                     .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             if (Intent.ACTION_SEND.compareTo(action) == 0) {
                 newIntent.putExtra(Intent.EXTRA_STREAM, outUri);
@@ -266,18 +269,20 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
                     finish();
                 }
             } catch (ActivityNotFoundException ex) {
-                String message = getString(R.string.error_location_map_viewer_not_found);
-                Toast.makeText(this, message,
-                        Toast.LENGTH_LONG).show();
-                Log.e(TAG, intent.toUri(Intent.URI_INTENT_SCHEME));
-                Log.e(TAG, message);
+                Log.e(TAG, newIntent.toUri(Intent.URI_INTENT_SCHEME));
+                showErrorMessage(getString(R.string.error_location_map_viewer_not_found));
             }
 
         } else {
-            Toast.makeText(this, getString(R.string.error_service, geoConfig.serviceName),
-                    Toast.LENGTH_LONG).show();
+            showErrorMessage(getString(R.string.error_service, geoConfig.serviceName));
             gui.excludeLastService();
         }
+    }
+
+    private void showErrorMessage(String message) {
+        Toast.makeText(this, message,
+                Toast.LENGTH_LONG).show();
+        Log.e(TAG, message);
     }
 
     private GeoPointDto getGeoPointDtoFromIntent(Intent intent) {
