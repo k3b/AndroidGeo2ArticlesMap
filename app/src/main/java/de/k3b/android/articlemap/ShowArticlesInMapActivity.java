@@ -26,6 +26,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,6 +36,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -61,10 +63,14 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
     private GeoConfig geoConfig = null;
     private Gui gui = null;
 
+    private Handler progressMessageHandler = null;
+    private ArticlesDownloadService.ProgressMessage progressMessage = null;
+
     private class Gui {
         private final HistoryEditText mHistory;
         private final EditText editService;
         private final CheckBox chkHide;
+        private final TextView lblMessage;
 
         private Gui() {
             editService = findViewById(R.id.edit_service);
@@ -89,6 +95,7 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
                     onTestSettings();
                 }
             });
+            lblMessage = findViewById(R.id.lbl_message);
         }
 
         private Gui save(GeoConfig geoConfig) {
@@ -192,7 +199,7 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
         private File translateGeoToFile(GeoPointDto geoPointFromIntent) throws java.io.IOException {
             String serviceName = geoConfig.serviceName;
             ArticlesDownloadService service = new ArticlesDownloadService(
-                    serviceName, geoConfig.USER_AGENT, null)
+                    serviceName, geoConfig.USER_AGENT, progressMessage)
                     .setMaxcount(geoConfig.maxcount);
 
             String name = createFileName(geoConfig.serviceName, geoPointFromIntent.getLatitude(), geoPointFromIntent.getLongitude());
@@ -204,6 +211,8 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
             List<IGeoPointInfo> result = service.saveAs(
                     geoPointFromIntent.getLatitude(), geoPointFromIntent.getLongitude(),outFile);
             if (result == null) {
+                Log.i(TAG,"translateGeoToFile() failed");
+
                 return null;
             }
             return outFile;
@@ -227,6 +236,19 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
         } else {
             setContentView(R.layout.activity_choose_url);
             gui = new Gui().load(geoConfig);
+            progressMessageHandler = new Handler();
+            progressMessage = new ArticlesDownloadService.ProgressMessage() {
+                @Override
+                public void message(final String message) {
+                    progressMessageHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            gui.lblMessage.setText(message);
+                        }
+                    });
+                }
+            };
+
         }
     }
 
@@ -283,6 +305,9 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
         Toast.makeText(this, message,
                 Toast.LENGTH_LONG).show();
         Log.e(TAG, message);
+        if (progressMessage != null) {
+            progressMessage.message(message);
+        }
     }
 
     private GeoPointDto getGeoPointDtoFromIntent(Intent intent) {

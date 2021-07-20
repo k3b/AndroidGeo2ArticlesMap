@@ -31,7 +31,6 @@ import java.util.List;
 import de.k3b.geo.GeoConfig;
 import de.k3b.geo.api.IGeoPointInfo;
 import de.k3b.geo.io.DownloadGpxKmlZipWithSymbolsService;
-import de.k3b.geo.io.DownloadSymbolsBaseService.ITranslateSymbolUri;
 import de.k3b.geo.io.gpx.GpxReader;
 
 /**
@@ -40,20 +39,24 @@ import de.k3b.geo.io.gpx.GpxReader;
 public class ArticlesDownloadService extends DownloadGpxKmlZipWithSymbolsService {
     private static final String TAG = "k3b.ArticlesDownload";
     private final String serviceName;
+    private final ProgressMessage progressMessage;
 
     int radius = 10000;
     int maxcount = 5;
 
+    public interface ProgressMessage {
+        void message(final String message);
+    }
     /**
      * @param serviceName where the data comes from. i.e.  "en.wikipedia.org" or "de.wikivoyage.org"
      * @param userAgent a string identifying the calling app.
      *                  i.e. "MyHelloWikipediaApp/1.0 (https://github.com/MyName/MyHelloWikipediaApp)"
-     *                  see https://meta.wikimedia.org/wiki/Special:MyLanguage/User-Agent_policy
-     * @param translateSymbolUri Under Android you can use this to translate File-Uris to Android-Content-uris
+     * @param progressMessage if not null: progress messages go here.
      */
-    public ArticlesDownloadService(String serviceName, String userAgent, ITranslateSymbolUri translateSymbolUri) {
-        super(userAgent, translateSymbolUri);
+    public ArticlesDownloadService(String serviceName, String userAgent, ProgressMessage progressMessage) {
+        super(userAgent, null);
         this.serviceName = serviceName;
+        this.progressMessage = progressMessage;
     }
 
     public ArticlesDownloadService setRadius(int radius) {
@@ -81,22 +84,41 @@ public class ArticlesDownloadService extends DownloadGpxKmlZipWithSymbolsService
 
     private List<IGeoPointInfo> getGeoPointInfos(Object lat, Object lon) {
         String urlString = this.getQueryGeoUrlString(lat, lon);
-        Log.i(TAG,"downloading from " + urlString);
+        String message = "downloading articles from " + serviceName;
+        Log.i(TAG, message + " using " + urlString);
+        if (progressMessage != null) {
+            progressMessage.message(message);
+        }
 
         try (InputStream inputStream = this.getInputStream(urlString) ){
             GpxReader<IGeoPointInfo> parser = new GpxReader<>();
+            message = "analysing articles ...";
+                    Log.d(TAG,message);
+            if (progressMessage != null) {
+                progressMessage.message(message);
+            }
+
             List<IGeoPointInfo> points = parser.getTracks(new InputSource(inputStream));
             return points;
         } catch (Exception ex) {
-            Log.e(TAG, "cannot read from '" + this.serviceName
-                    + "' using '" + urlString + "'" ,ex);
+            message = "cannot read from '" + this.serviceName + "' using '" + urlString + "'" ;
+                    Log.e(TAG, message,ex);
+            if (progressMessage != null) {
+                progressMessage.message(message);
+            }
             return null;
         }
     }
 
     public List<IGeoPointInfo> saveAs(Object lat, Object lon, File out) throws IOException {
         List<IGeoPointInfo> points = getGeoPointInfos(lat, lon);
-        if (points != null && points.size() > 0) {
+        if (points != null && !points.isEmpty()) {
+            String message = "writing articles to " + out.getAbsolutePath();
+            Log.d(TAG, message);
+            if (progressMessage != null) {
+                progressMessage.message(message);
+            }
+
             saveAs(points, out);
         }
         return points;

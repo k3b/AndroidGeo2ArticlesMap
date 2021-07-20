@@ -100,4 +100,14 @@ Select geo viewer:
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chk_hide" />
 
+    <TextView
+        android:id="@+id/lbl_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cmd_test" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
