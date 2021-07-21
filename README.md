@@ -35,3 +35,13 @@ Technically speaking the AndroidGeo2ArticlesMap app
 Copyright (c) by k3b, Licensed under GPL, Version 3.0 or later.
 
 Wikipedia and Wikivoyage are  [trademarks of the Wikimedia Foundation](https://foundation.wikimedia.org/wiki/Wikimedia_trademarks)
+
+-----
+
+## Donations: 
+
+If you like this app please consider to donating to http://donate.openstreetmap.org/ .
+
+Since android-developping is a hobby (and an education tool) i donot want any 
+money for my apps so donation should go to projects i benefit from.
+
