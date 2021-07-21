@@ -21,12 +21,11 @@
 <resources>
     <string name="app_name">Show Articles in Map</string>
 
-    <!--- Settings -->
-    <string name="pref_settings_title">Settings</string>
     <string name="btn_popup">…</string>
     <string name="lbl_service">Service:</string>
     <string name="lbl_donot_show_this_dialog_again">Do not show this dialog again</string>
-    <string name="lbl_test">Test</string>
+    <string name="view">View</string>
+    <string name="share">Share</string>
 
     <!--- error handling -->
     <string name="error_permission">Missing permisions</string>

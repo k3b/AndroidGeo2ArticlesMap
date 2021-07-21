@@ -89,16 +89,41 @@ Select geo viewer:
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_service" />
 
-    <!-- visible when app is called without geo uri -->
+    <!--  -->
     <Button
-        android:id="@+id/cmd_test"
+        android:id="@+id/cmd_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/lbl_test"
+        android:text="@string/view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chk_hide" />
+
+    <Button
+        android:id="@+id/cmd_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/share"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/cmd_view"
+        app:layout_constraintStart_toEndOf="@+id/cmd_view"
+        app:layout_constraintTop_toTopOf="@+id/cmd_view"
+        />
+
+    <Button
+        android:id="@+id/cmd_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@android:string/cancel"
+        app:layout_constraintBottom_toBottomOf="@+id/cmd_share"
+        app:layout_constraintStart_toEndOf="@+id/cmd_share"
+        app:layout_constraintTop_toTopOf="@+id/cmd_share"
+         />
+
+    <!--  -->
 
     <TextView
         android:id="@+id/lbl_message"
@@ -107,7 +132,7 @@ Select geo viewer:
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cmd_test" />
+        app:layout_constraintTop_toBottomOf="@+id/cmd_view" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

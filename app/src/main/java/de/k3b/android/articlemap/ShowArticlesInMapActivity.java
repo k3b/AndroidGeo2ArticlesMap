@@ -88,11 +88,25 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
                     R.id.cmd_service_history} ,
                     editService );
 
-            Button cmdTest = findViewById(R.id.cmd_test);
-            cmdTest.setOnClickListener(new View.OnClickListener() {
+            Button cmdView = findViewById(R.id.cmd_view);
+            cmdView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    onTestSettings();
+                    onStart(Intent.ACTION_VIEW);
+                }
+            });
+            Button cmdShare = findViewById(R.id.cmd_share);
+            cmdShare.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onStart(Intent.ACTION_SEND);
+                }
+            });
+            Button cmdCancel = findViewById(R.id.cmd_cancel);
+            cmdCancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
                 }
             });
             lblMessage = findViewById(R.id.lbl_message);
@@ -101,7 +115,7 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
         private Gui save(GeoConfig geoConfig) {
             geoConfig.serviceName = editService.getText().toString();
             geoConfig.showSettings = !chkHide.isChecked();
-
+            mHistory.saveHistory();
             return this;
         }
 
@@ -231,8 +245,8 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
 
         GeoPointDto geoPointFromIntent = getGeoPointDtoFromIntent(getIntent());
 
-        if (geoPointFromIntent != null && !geoConfig.showSettings) {
-            queryDataFromArticleServer(geoPointFromIntent, false);
+        if (!geoConfig.showSettings && !GeoPointDto.isEmpty(geoPointFromIntent)) {
+            queryDataFromArticleServer(geoPointFromIntent, false, getIntent().getAction());
         } else {
             setContentView(R.layout.activity_choose_url);
             gui = new Gui().load(geoConfig);
@@ -249,11 +263,16 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
                 }
             };
 
+            if (!GeoPointDto.isEmpty(geoPointFromIntent)) {
+                this.geoConfig.demoUri = geoPointFromIntent;
+            }
+            progressMessage.message("Using " + toString(geoPointFromIntent));
         }
     }
 
-    private void queryDataFromArticleServer(GeoPointDto geoPointFromIntent, boolean inDemoMode) {
+    private void queryDataFromArticleServer(GeoPointDto geoPointFromIntent, boolean inDemoMode, String action) {
         geoConfig.inDemoMode = inDemoMode;
+        geoConfig.action = action;
         String name = createFileName(geoConfig.serviceName, geoPointFromIntent.getLatitude(), geoPointFromIntent.getLongitude());
         File outFile = new File(
                 createSharedOutDir(name),
@@ -267,16 +286,12 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
     private void showResult(File outFile) {
         if (outFile != null) {
             // success: forward same Action/Mime to final kmz receiver
-            Intent oldIntent = getIntent();
-            String action = oldIntent == null ? null : oldIntent.getAction();
-            if (action == null || Intent.ACTION_MAIN.compareTo(action) == 0) {
-                action = Intent.ACTION_VIEW;
-            }
 
             Uri outUri = createSharedUri(outFile);
-            Intent newIntent = new Intent(action)
+            Intent newIntent = new Intent(geoConfig.action)
                     .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            if (Intent.ACTION_SEND.compareTo(action) == 0) {
+            newIntent.putExtra(Intent.EXTRA_TITLE, geoConfig.serviceName);
+            if (Intent.ACTION_SEND.compareTo(geoConfig.action) == 0) {
                 newIntent.putExtra(Intent.EXTRA_STREAM, outUri);
             } else {
                 // ACTION_SENDTO or ACTION_VIEW
@@ -369,7 +384,7 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
             GeoPointDto geoPointFromIntent = getGeoPointDtoFromIntent(getIntent());
 
             if (geoPointFromIntent != null) {
-                queryDataFromArticleServer(geoPointFromIntent, false);
+                queryDataFromArticleServer(geoPointFromIntent, false, Intent.ACTION_VIEW);
             } else {
                 finish();
             }
@@ -380,9 +395,9 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
 
     }
 
-    private void onTestSettings() {
+    private void onStart(String action) {
         save();
-        queryDataFromArticleServer(geoConfig.demoUri, true);
+        queryDataFromArticleServer(geoConfig.demoUri, true, action);
     }
 
     private void save() {
@@ -419,4 +434,27 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
     private void onAddLanguagePick(LanguageDefinition item) {
         gui.includeService(item);
     }
+
+    public static String toString(IGeoPointInfo point) {
+        if (point != null) {
+            StringBuilder result = new StringBuilder();
+            if (point.getName() != null && !point.getName().isEmpty()) {
+                result.append(point.getName());
+            }
+            if (!GeoPointDto.isEmpty(point)) {
+                result
+                        .append("(")
+                        .append(point.getLatitude())
+                        .append(",")
+                        .append(point.getLongitude())
+                        .append(")");
+            }
+            if (result.length() > 0) {
+                return result.toString();
+            }
+        }
+
+        return "";
+    }
+
 }

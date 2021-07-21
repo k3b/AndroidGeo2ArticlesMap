@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="de.k3b.android.articlemap">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"   />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="18" />
     <uses-permission android:name="android.permission.INTERNET"   />
     <application
         android:allowBackup="false"

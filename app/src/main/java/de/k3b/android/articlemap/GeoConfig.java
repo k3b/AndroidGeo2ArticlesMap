@@ -19,6 +19,7 @@
 package de.k3b.android.articlemap;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
@@ -33,9 +34,10 @@ public class GeoConfig {
 
     public final int maxcount = 25;
 
-    // Berlin, Gemany, Siegessäule
-    public final GeoPointDto demoUri = new GeoPointDto().setLatLon(52.51451,13.35011);
+    public GeoPointDto demoUri = new GeoPointDto().setLatLon(52.51,13.35)
+            .setName("Berlin, Germany");
     public boolean inDemoMode = false;
+    public String action = Intent.ACTION_VIEW;
 
     public GeoConfig(Context context) {
         SharedPreferences prefsInstance = PreferenceManager
