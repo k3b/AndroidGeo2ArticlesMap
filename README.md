@@ -24,7 +24,7 @@ You can get geo-infos from these opensource apps
 Technically speaking the AndroidGeo2ArticlesMap app 
 * hooks into the android system for view/send/share events for geographic coordinates (also known as [geo: - uri](https://en.wikipedia.org/wiki/Geo_URI_scheme)), 
 * [asks wikipedia for article infos near this location](https://en.wikipedia.org/w/api.php),
-* translates the articles found into a standardformat ([kmz](https://en.wikipedia.org/wiki/Keyhole_Markup_Language) 
+* translates the articles found into a standardformat ([kmz](https://en.wikipedia.org/wiki/Keyhole_Markup_Language) )
 * and asks android to show the generated kmz file
 * The result is shown in [Location Map Viewer](https://f-droid.org/en/packages/de.k3b.android.locationMapViewer) (or any other installed app that understands kmz) 
 

@@ -16,7 +16,7 @@ from xml.etree import ElementTree
 # configuration: set constant to None if you do not want to use the feature
 
 # if not None replace title becomes DEFAULT_APP_TITLE (translation)
-DEFAULT_APP_TITLE = "A Photo Manager"
+DEFAULT_APP_TITLE = "Show Articles in Map"
 
 # all paths are relative to [root]/fastlane/*.py
 

@@ -11,8 +11,9 @@ android {
 
         // v1.0 (1) initial release
         // v1.1 (2) fixed gradle wrapper checksum
-        versionCode 2
-        versionName 'v1.1'
+        // v1.3 (3) fixed fastlane description
+        versionCode 3
+        versionName 'v1.3'
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

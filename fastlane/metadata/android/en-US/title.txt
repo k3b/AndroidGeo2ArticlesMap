@@ -1,1 +1,1 @@
-A Photo Manager (Show Articles in Map)
+Show Articles in Map
