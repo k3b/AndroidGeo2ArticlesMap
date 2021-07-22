@@ -32,9 +32,6 @@ import androidx.core.app.ActivityCompat;
  * Handles all permission releated stuff
  */
 public abstract class PermissionBaseActivity extends Activity {
-    private static final int PERMISSION_REQUEST_ID_FILE_WRITE = 23;
-    private static final String PERMISSION_FILE_WRITE = Manifest.permission.WRITE_EXTERNAL_STORAGE;
-
     private static final int PERMISSION_REQUEST_ID_INTERNET = 24;
     private static final String PERMISSION_INTERNET = Manifest.permission.INTERNET;
 
@@ -55,11 +52,6 @@ public abstract class PermissionBaseActivity extends Activity {
         if (ActivityCompat.checkSelfPermission(this, PERMISSION_INTERNET)
                 != PackageManager.PERMISSION_GRANTED) {
             requestPermission(savedInstanceState, PERMISSION_INTERNET, PERMISSION_REQUEST_ID_INTERNET);
-            return;
-        }
-        if (ActivityCompat.checkSelfPermission(this, PERMISSION_FILE_WRITE)
-                != PackageManager.PERMISSION_GRANTED) {
-            requestPermission(savedInstanceState, PERMISSION_FILE_WRITE, PERMISSION_REQUEST_ID_FILE_WRITE);
             return;
         }
 
@@ -83,10 +75,6 @@ public abstract class PermissionBaseActivity extends Activity {
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == PERMISSION_REQUEST_ID_INTERNET) {
-            onRequestPermissionsResult(grantResults);
-            return;
-        }
-        if (requestCode == PERMISSION_REQUEST_ID_FILE_WRITE) {
             onRequestPermissionsResult(grantResults);
             return;
         }

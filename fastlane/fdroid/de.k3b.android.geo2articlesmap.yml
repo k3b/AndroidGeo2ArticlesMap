@@ -6,7 +6,7 @@ AuthorName: k3b
 SourceCode: https://github.com/k3b/AndroidGeo2ArticlesMap
 IssueTracker: https://github.com/k3b/AndroidGeo2ArticlesMap/issues
 Changelog: https://github.com/k3b/AndroidGeo2ArticlesMap/releases
-Donate: http://donate.openstreetmap.org/
+Donate: https://donate.openstreetmap.org/
 
 AutoName: Show Articles in Map
 
@@ -14,14 +14,14 @@ RepoType: git
 Repo: https://github.com/k3b/AndroidGeo2ArticlesMap
 
 Builds:
-  - versionName: 1.3
-    versionCode: 3
-    commit: v1.3
+  - versionName: v1.4
+    versionCode: 4
+    commit: v1.4
     subdir: app
     gradle:
       - yes
 
 AutoUpdateMode: Version
 UpdateCheckMode: Tags
-CurrentVersion: v1.3
-CurrentVersionCode: 3
+CurrentVersion: v1.4
+CurrentVersionCode: 4

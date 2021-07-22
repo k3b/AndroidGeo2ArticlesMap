@@ -14,7 +14,6 @@
 <hr />
 <p>Required Android Permissions:</p>
 <ul>
-<li>INTERNET: to download article data from wikipedia or wikivoyage Server</li>
-<li>WRITE_EXTERNAL_STORAGE to write the result data to a 'kmz' file.
+<li>INTERNET: to download article data from wikipedia or wikivoyage Server
 .</li>
 </ul>

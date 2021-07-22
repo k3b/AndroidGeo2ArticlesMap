@@ -58,7 +58,6 @@ Here are some f-droid apps that are compatible with *Show Articles in Map*
 Required Android Permissions:
 
 * INTERNET: to download article data from wikipedia or wikivoyage Server
-* WRITE_EXTERNAL_STORAGE to write the result data to a 'kmz' file.
 .
 "]]></string>
 </resources>

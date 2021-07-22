@@ -12,8 +12,9 @@ android {
         // v1.0 (1) initial release
         // v1.1 (2) fixed gradle wrapper checksum
         // v1.3 (3) fixed fastlane description
-        versionCode 3
-        versionName 'v1.3'
+        // v1.4 (4) removed obsolete write permissions not neccessary since android-4.4 (api 19)
+        versionCode 4
+        versionName 'v1.4'
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
