@@ -10,17 +10,9 @@ Show articles near
 Service:
 [de.wikipedia.org_____] V [...]
 
-[X] Add Symbols to map
-[X] Add Icon to popup
 [X] Do not show this dialog again
 
-File Format:
-[kml.zip______________] V
-
-Select geo viewer:
-[Location Map Viewer   ] V [...]
-
-[OK] [Cancel]
+[View] [Cancel]
  -->
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -28,100 +20,100 @@ Select geo viewer:
     android:layout_width="fill_parent"
     android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/lbl_service"
+    <TextView android:id="@+id/lbl_service"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:text="@string/lbl_service"
         android:labelFor="@+id/edit_service"
+        android:text="@string/lbl_service"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/edit_service"
-        android:layout_width="295dp"
-        android:layout_height="43dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:ems="10"
-        android:inputType="textUri"
-        android:autofillHints="@string/lbl_service"
-        app:layout_constraintStart_toStartOf="parent"
-
-        app:layout_constraintTop_toBottomOf="@+id/lbl_service"
-        app:layout_constraintTop_toTopOf="@+id/cmd_service_history" />
-
-    <ImageButton
-        android:id="@+id/cmd_service_history"
-        android:layout_width="wrap_content"
+    <!--  -->
+    <EditText android:id="@+id/edit_service"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:src="@android:drawable/ic_menu_more"
-        app:layout_constraintBottom_toBottomOf="@+id/cmd_service"
-        app:layout_constraintStart_toEndOf="@+id/edit_service"
-        app:layout_constraintTop_toBottomOf="@+id/lbl_service"
-        app:layout_constraintTop_toTopOf="@+id/cmd_service" />
 
-    <Button
-        android:id="@+id/cmd_service"
-        android:layout_width="35dp"
-        android:layout_height="43dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:autofillHints="@string/hint_edit_service"
+        android:ems="10"
+        android:inputType="textUri"
+        android:minHeight="48dp"
+        app:layout_constraintBottom_toBottomOf="@+id/cmd_service"
+        app:layout_constraintEnd_toStartOf="@+id/cmd_service_history"
+        app:layout_constraintHorizontal_bias="0.82"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cmd_service_history" />
+
+    <ImageButton android:id="@+id/cmd_service_history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/hint_history"
+        android:src="@android:drawable/ic_menu_more"
+        app:layout_constraintBottom_toBottomOf="@+id/cmd_service"
+        app:layout_constraintEnd_toStartOf="@+id/cmd_service"
+        app:layout_constraintTop_toTopOf="@+id/cmd_service" />
+
+    <Button android:id="@+id/cmd_service"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:contentDescription="@string/hint_choose_service"
         android:text="@string/btn_popup"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cmd_service_history"
         app:layout_constraintTop_toBottomOf="@+id/lbl_service"
         tools:text="@string/btn_popup" />
 
-    <!-- -->
+    <!--  -->
 
     <CheckBox
         android:id="@+id/chk_hide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
+        android:minHeight="48dp"
         android:text="@string/lbl_donot_show_this_dialog_again"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_service" />
 
     <!--  -->
+
     <Button
         android:id="@+id/cmd_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="@string/view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chk_hide" />
 
-    <Button
-        android:id="@+id/cmd_share"
+    <Button android:id="@+id/cmd_share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="96dp"
         android:text="@string/share"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/cmd_view"
-        app:layout_constraintStart_toEndOf="@+id/cmd_view"
-        app:layout_constraintTop_toTopOf="@+id/cmd_view"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/cmd_view" />
 
-    <Button
-        android:id="@+id/cmd_cancel"
+    <Button android:id="@+id/cmd_cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginBottom="8dp"
         android:text="@android:string/cancel"
-        app:layout_constraintBottom_toBottomOf="@+id/cmd_share"
-        app:layout_constraintStart_toEndOf="@+id/cmd_share"
-        app:layout_constraintTop_toTopOf="@+id/cmd_share"
-         />
+        app:layout_constraintBottom_toBottomOf="@+id/cmd_view"
+        app:layout_constraintStart_toEndOf="@+id/cmd_view"
+        app:layout_constraintTop_toTopOf="@+id/cmd_view"
+        app:layout_constraintVertical_bias="0.0" />
 
     <!--  -->
 
@@ -130,9 +122,8 @@ Select geo viewer:
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cmd_view" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

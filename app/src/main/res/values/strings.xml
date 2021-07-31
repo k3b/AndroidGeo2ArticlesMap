@@ -23,6 +23,7 @@
 
     <string name="btn_popup">…</string>
     <string name="lbl_service">Service:</string>
+    <string name="hint_edit_service">enter or select Service</string>
     <string name="lbl_donot_show_this_dialog_again">Do not show this dialog again</string>
     <string name="view">View</string>
     <string name="share">Share</string>
@@ -31,4 +32,6 @@
     <string name="error_permission">Missing permisions</string>
     <string name="error_service">Service error in %1$s</string>
     <string name="error_location_map_viewer_not_found">You must also install LocationMapViewer</string>
+    <string name="hint_choose_service">Choose Service</string>
+    <string name="hint_history">History</string>
 </resources>
