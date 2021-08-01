@@ -1,1 +1,2 @@
---- todo ---
+* #1: Fixe layout: service buttons may overlap
+* #3: fixed errorhandling: servicehistory entry not removed when no internet.

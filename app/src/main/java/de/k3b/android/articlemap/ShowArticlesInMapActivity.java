@@ -19,19 +19,21 @@
 
 package de.k3b.android.articlemap;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -58,7 +60,7 @@ import de.k3b.util.TempFileUtil;
  * Translates from ACTION_SEND(TO)/VIEW with geo-uri to ACTION_SEND(TO)/VIEW with kml/kmz/gpx... uri
  */
 public class ShowArticlesInMapActivity extends PermissionBaseActivity {
-    private static final String TAG = "k3b.ShowArticlesInMap";
+    public static final String TAG = "k3b.ShowArticlesInMap";
 
     private GeoConfig geoConfig = null;
     private Gui gui = null;
@@ -76,12 +78,7 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
             editService = findViewById(R.id.edit_service);
 
             Button cmdService = findViewById(R.id.cmd_service);
-            cmdService.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showLanguagesPicker();
-                }
-            });
+            cmdService.setOnClickListener(v -> showLanguagesPicker());
 
             chkHide = findViewById(R.id.chk_hide);
             mHistory = new HistoryEditText(ShowArticlesInMapActivity.this, new int[] {
@@ -89,26 +86,11 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
                     editService );
 
             Button cmdView = findViewById(R.id.cmd_view);
-            cmdView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onStart(Intent.ACTION_VIEW);
-                }
-            });
+            cmdView.setOnClickListener(v -> onStart(Intent.ACTION_VIEW));
             Button cmdShare = findViewById(R.id.cmd_share);
-            cmdShare.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onStart(Intent.ACTION_SEND);
-                }
-            });
+            cmdShare.setOnClickListener(v -> onStart(Intent.ACTION_SEND));
             Button cmdCancel = findViewById(R.id.cmd_cancel);
-            cmdCancel.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    finish();
-                }
-            });
+            cmdCancel.setOnClickListener(v -> finish());
             lblMessage = findViewById(R.id.lbl_message);
         }
 
@@ -194,23 +176,27 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
 
             initServiceHistory();
         }
+
+        public void setGuiMessage(int stringId, Object... parameters) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                lblMessage.setText(Html.fromHtml(getString(stringId, parameters),Html.FROM_HTML_MODE_LEGACY));
+                Linkify.addLinks(gui.lblMessage, Linkify.WEB_URLS);
+                // gui.lblMessage.setMovementMethod(LinkMovementMethod.getInstance());
+            } else {
+                lblMessage.setText(Html.fromHtml(getString(stringId, parameters)));
+            }
+        }
     }
 
-    class GeoLoadTask extends AsyncTask<GeoPointDto, Void, File> {
+    class GeoLoadTask extends AsyncTask<GeoPointDto, Void, ArticlesDownloadService.Result> {
 
         @Override
-        protected File doInBackground(GeoPointDto... arg0) {
-            //Your implementation
-            try {
-                return translateGeoToFile(arg0[0]);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-                return null;
-            }
+        protected ArticlesDownloadService.Result doInBackground(GeoPointDto... arg0) {
+           return translateGeoToFile(arg0[0]);
         }
 
 
-        private File translateGeoToFile(GeoPointDto geoPointFromIntent) throws java.io.IOException {
+        private ArticlesDownloadService.Result translateGeoToFile(GeoPointDto geoPointFromIntent)  {
             String serviceName = geoConfig.serviceName;
             ArticlesDownloadService service = new ArticlesDownloadService(
                     serviceName, geoConfig.USER_AGENT, progressMessage)
@@ -222,18 +208,13 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
                     createSharedOutDir(name),
                     name + geoConfig.outFileExtension);
 
-            List<IGeoPointInfo> result = service.saveAs(
-                    geoPointFromIntent.getLatitude(), geoPointFromIntent.getLongitude(),outFile);
-            if (result == null) {
-                Log.i(TAG,"translateGeoToFile() failed");
-
-                return null;
-            }
-            return outFile;
+            ArticlesDownloadService.Result result = service.saveAsEx(
+                    geoPointFromIntent.getLatitude(), geoPointFromIntent.getLongitude(), geoConfig.withSymbols, outFile);
+            return result;
         }
 
         @Override
-        protected void onPostExecute(File result) {
+        protected void onPostExecute(ArticlesDownloadService.Result result) {
             showResult(result);
         }
     }
@@ -245,23 +226,13 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
 
         GeoPointDto geoPointFromIntent = getGeoPointDtoFromIntent(getIntent());
 
-        if (!geoConfig.showSettings && !GeoPointDto.isEmpty(geoPointFromIntent)) {
+        if (!geoConfig.showSettings && geoPointFromIntent != null && !GeoPointDto.isEmpty(geoPointFromIntent)) {
             queryDataFromArticleServer(geoPointFromIntent, false, getIntent().getAction());
         } else {
             setContentView(R.layout.activity_choose_url);
             gui = new Gui().load(geoConfig);
             progressMessageHandler = new Handler();
-            progressMessage = new ArticlesDownloadService.ProgressMessage() {
-                @Override
-                public void message(final String message) {
-                    progressMessageHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            gui.lblMessage.setText(message);
-                        }
-                    });
-                }
-            };
+            progressMessage = message -> progressMessageHandler.post(() -> gui.lblMessage.setText(message));
 
             if (!GeoPointDto.isEmpty(geoPointFromIntent)) {
                 this.geoConfig.demoUri = geoPointFromIntent;
@@ -283,11 +254,22 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
     }
 
     /** called in gui thread, after receiving answer from wikipedia */
-    private void showResult(File outFile) {
-        if (outFile != null) {
+    @SuppressLint("StringFormatMatches")
+    private void showResult(ArticlesDownloadService.Result result) {
+
+        if (result.errorMessageId != 0) {
+            showErrorMessage(getString(result.errorMessageId, geoConfig.serviceName, result.outFile, toString(geoConfig.demoUri),""));
+        } else if (result.points == null || result.points.isEmpty()) {
+            showMessage(getString(R.string.warn_no_article_found, geoConfig.serviceName, result.outFile, toString(geoConfig.demoUri), ""));
+        }
+        if (result.errorMessageId == R.string.error_service_url_invalid) {
+            gui.excludeLastService();
+        }
+
+        if (result.errorMessageId == 0 && result.points != null && !result.points.isEmpty()) {
             // success: forward same Action/Mime to final kmz receiver
 
-            Uri outUri = createSharedUri(outFile);
+            Uri outUri = createSharedUri(result.outFile);
             Intent newIntent = new Intent(geoConfig.action)
                     .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             newIntent.putExtra(Intent.EXTRA_TITLE, geoConfig.serviceName);
@@ -305,21 +287,26 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
                 if (!geoConfig.inDemoMode) {
                     finish();
                 }
+                gui.setGuiMessage(R.string.info_success,
+                        geoConfig.serviceName, result.outFile, toString(geoConfig.demoUri), ""+ result.points.size());
             } catch (ActivityNotFoundException ex) {
                 Log.e(TAG, newIntent.toUri(Intent.URI_INTENT_SCHEME));
-                showErrorMessage(getString(R.string.error_location_map_viewer_not_found));
+
+                gui.setGuiMessage(R.string.error_location_map_viewer_not_found,
+                        geoConfig.serviceName, result.outFile, toString(geoConfig.demoUri), "");
             }
 
-        } else {
-            showErrorMessage(getString(R.string.error_service, geoConfig.serviceName));
-            gui.excludeLastService();
         }
     }
 
-    private void showErrorMessage(String message) {
+    private void showErrorMessage(CharSequence message) {
         Toast.makeText(this, message,
                 Toast.LENGTH_LONG).show();
-        Log.e(TAG, message);
+        Log.e(TAG, message.toString());
+        showMessage(message);
+    }
+
+    private void showMessage(CharSequence message) {
         if (progressMessage != null) {
             progressMessage.message(message);
         }
@@ -414,19 +401,11 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
         }
         new AlertDialog.Builder(this)
                 .setTitle(R.string.lbl_service)
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
+                .setNegativeButton(android.R.string.cancel, (dialog, which) -> dialog.dismiss())
                 .setAdapter(adapter,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                onAddLanguagePick(adapter.getItem(which));
-                            }
+                        (dialog, which) -> {
+                            dialog.dismiss();
+                            onAddLanguagePick(adapter.getItem(which));
                         })
                 .show();
     }

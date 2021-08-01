@@ -21,17 +21,25 @@
 <resources>
     <string name="app_name">Show Articles in Map</string>
 
-    <string name="btn_popup">…</string>
     <string name="lbl_service">Service:</string>
-    <string name="hint_edit_service">enter or select Service</string>
+    <string name="hint_edit_service">Enter or select Service</string>
     <string name="lbl_donot_show_this_dialog_again">Do not show this dialog again</string>
     <string name="view">View</string>
     <string name="share">Share</string>
 
     <!--- error handling -->
+
+    <!-- %1$s = service-url, %2$s = filename, %3$s = (lat/lon), %4$s number of articles found -->
+    <string name="error_service_url_invalid">Service url %1$s invalid</string>
+    <string name="error_internet_not_available">No Internet connection. Cannot reach %1$s or en.wikipedia.org.</string>
+    <string name="error_cannot_write_local_file">Cannot write local file %2$s.</string>
+    <string name="warn_no_article_found">No article found near %3$s in %1$s.</string>
+    <string name="info_success">"Extracted %4$s articles from %1$s near
+        %3$s."</string>
+
+    <string name="error_location_map_viewer_not_found"><![CDATA["
+You must also install <a href='https://f-droid.org/packages/de.k3b.android.locationMapViewer'>LocationMapViewer</a>
+    "]]></string>
+
     <string name="error_permission">Missing permisions</string>
-    <string name="error_service">Service error in %1$s</string>
-    <string name="error_location_map_viewer_not_found">You must also install LocationMapViewer</string>
-    <string name="hint_choose_service">Choose Service</string>
-    <string name="hint_history">History</string>
 </resources>

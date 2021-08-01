@@ -24,8 +24,12 @@ import org.xml.sax.InputSource;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.List;
 
 import de.k3b.geo.GeoConfig;
@@ -37,7 +41,8 @@ import de.k3b.geo.io.gpx.GpxReader;
  * Translates geo / gps location to local kml/kmz file with nearby wikipedia articles.
  */
 public class ArticlesDownloadService extends DownloadGpxKmlZipWithSymbolsService {
-    private static final String TAG = "k3b.ArticlesDownload";
+    public static final String TAG = "k3b.ArticlesDownload";
+
     private final String serviceName;
     private final ProgressMessage progressMessage;
 
@@ -45,7 +50,7 @@ public class ArticlesDownloadService extends DownloadGpxKmlZipWithSymbolsService
     int maxcount = 5;
 
     public interface ProgressMessage {
-        void message(final String message);
+        void message(final CharSequence message);
     }
     /**
      * @param serviceName where the data comes from. i.e.  "en.wikipedia.org" or "de.wikivoyage.org"
@@ -69,6 +74,24 @@ public class ArticlesDownloadService extends DownloadGpxKmlZipWithSymbolsService
         return this;
     }
 
+    // from https://stackoverflow.com/questions/1560788/how-to-check-internet-access-on-android-inetaddress-never-times-out
+    private boolean isOnline() {
+        try {
+            int timeoutMs = 1500;
+            Socket sock = new Socket();
+
+            // ping
+            SocketAddress sockaddr = new InetSocketAddress("en.wikipedia.org", 53);
+
+            sock.connect(sockaddr, timeoutMs);
+            sock.close();
+
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
     private InputStream getInputStream(String urlString) throws IOException {
         return getInputStream(new URL(urlString));
     }
@@ -82,8 +105,8 @@ public class ArticlesDownloadService extends DownloadGpxKmlZipWithSymbolsService
         return hc.getInputStream();
     }
 
-    private List<IGeoPointInfo> getGeoPointInfos(Object lat, Object lon) {
-        String urlString = this.getQueryGeoUrlString(lat, lon);
+    private Result getGeoPointInfos(Object lat, Object lon, boolean withSymbols) {
+        String urlString = this.getQueryGeoUrlString(lat, lon, withSymbols);
         String message = "downloading articles from " + serviceName;
         Log.i(TAG, message + " using " + urlString);
         if (progressMessage != null) {
@@ -99,59 +122,86 @@ public class ArticlesDownloadService extends DownloadGpxKmlZipWithSymbolsService
             }
 
             List<IGeoPointInfo> points = parser.getTracks(new InputSource(inputStream));
-            return points;
+            return new Result(null, points, 0, null);
         } catch (Exception ex) {
             message = "cannot read from '" + this.serviceName + "' using '" + urlString + "'" ;
                     Log.e(TAG, message,ex);
             if (progressMessage != null) {
                 progressMessage.message(message);
             }
-            return null;
+            if (isOnline()) {
+                return new Result(null, null, R.string.error_service_url_invalid, null);
+            }
+            return new Result(null, null, R.string.error_internet_not_available, null);
         }
     }
 
-    public List<IGeoPointInfo> saveAs(Object lat, Object lon, File out) throws IOException {
-        List<IGeoPointInfo> points = getGeoPointInfos(lat, lon);
-        if (points != null && !points.isEmpty()) {
-            String message = "writing articles to " + out.getAbsolutePath();
-            Log.d(TAG, message);
-            if (progressMessage != null) {
-                progressMessage.message(message);
-            }
+    public Result saveAsEx(Object lat, Object lon, boolean withSymbols, File out) {
+        Result result = getGeoPointInfos(lat, lon, withSymbols);
+        int size = result.points != null ? result.points.size()  : 0;
+        if (size > 0) {
+            try {
+                String message = "writing " + size + " articles to " + out.getAbsolutePath();
+                Log.d(TAG, message);
+                if (progressMessage != null) {
+                    progressMessage.message(message);
+                }
 
-            saveAs(points, out);
+                saveAs(result.points, out);
+                return new Result(out, result.points, result.errorMessageId, null);
+            } catch (IOException ex) {
+                return new Result(out, result.points, R.string.error_cannot_write_local_file, ex);
+            }
         }
-        return points;
+        return result;
     }
 
     /** api creates url that encodes what we want to get from wikipedia  */
-    private String getQueryGeoUrlString(Object lat, Object lon) {
+    private String getQueryGeoUrlString(Object lat, Object lon, boolean withSymbols) {
         // see https://www.mediawiki.org/wiki/Special:MyLanguage/API:Main_page
-        String urlString = "https://" +
-                serviceName +
-                "/w/api.php" +
+        StringBuilder urlString = new StringBuilder().append("https://")
+                .append(serviceName)
+                .append("/w/api.php" +
                 "?action=query" +
                 "&format=xml" +
-                "&prop=coordinates|info|pageimages|extracts" +
+                "&prop=coordinates|info");
+
+        if (withSymbols) {
+            urlString.append("|pageimages");
+        }
+
+        urlString.append("|extracts" +
                 "&inprop=url" +
-                "&piprop=thumbnail" +
                 "&generator=geosearch" +
-                "&ggscoord=" +
-                lat +
-                "|" +
-                lon +
-                "&ggsradius=" +
-                radius +
-                "&ggslimit=" +
-                maxcount +
+                "&ggscoord=")
+                .append(lat).append("|").append(lon)
+                .append("&ggsradius=").append(radius)
+                .append("&ggslimit=").append(maxcount);
 
-                "&pithumbsize=" +
-                GeoConfig.THUMBSIZE +
-                "&pilimit=" +
-                maxcount+
+        if (withSymbols) {
+            urlString.append("&piprop=thumbnail")
+                    .append("&pithumbsize=").append(GeoConfig.THUMBSIZE)
+                    .append("&pilimit=").append(maxcount);
+        }
 
+        urlString
                 // prop extracts: 2Sentenses in non-html before TOC
-                "&exsentences=2&explaintext&exintro";
-        return urlString;
+                .append("&exsentences=2&explaintext&exintro");
+        return urlString.toString();
     }
+
+    static class Result {
+        final File outFile;
+        final int errorMessageId;
+        private final Exception exception;
+        final List<IGeoPointInfo> points;
+
+        Result(File outFile, List<IGeoPointInfo> points, int errorMessageId, Exception exception) {
+            this.outFile = outFile;
+            this.points = points != null ? points : new ArrayList<>();
+            this.errorMessageId = errorMessageId;
+            this.exception = exception;
+        }
+    }
+
 }

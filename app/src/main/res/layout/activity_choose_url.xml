@@ -52,7 +52,7 @@ Service:
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:contentDescription="@string/hint_history"
+        android:contentDescription="@string/content_description_history"
         android:src="@android:drawable/ic_menu_more"
         app:layout_constraintBottom_toBottomOf="@+id/cmd_service"
         app:layout_constraintEnd_toStartOf="@+id/cmd_service"
@@ -63,7 +63,7 @@ Service:
         android:layout_height="48dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:contentDescription="@string/hint_choose_service"
+        android:contentDescription="@string/content_description_choose_service"
         android:text="@string/btn_popup"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lbl_service"
@@ -94,26 +94,26 @@ Service:
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chk_hide" />
 
-    <Button android:id="@+id/cmd_share"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="96dp"
-        android:text="@string/share"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/cmd_view"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/cmd_view" />
-
-    <Button android:id="@+id/cmd_cancel"
+    <Button
+        android:id="@+id/cmd_share"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@android:string/cancel"
+        android:text="@string/share"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/cmd_view"
         app:layout_constraintStart_toEndOf="@+id/cmd_view"
-        app:layout_constraintTop_toTopOf="@+id/cmd_view"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="@+id/cmd_view" />
+
+    <Button
+        android:id="@+id/cmd_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@android:string/cancel"
+        app:layout_constraintBottom_toBottomOf="@+id/cmd_view"
+        app:layout_constraintStart_toEndOf="@+id/cmd_share"
+        app:layout_constraintTop_toTopOf="@+id/cmd_view" />
 
     <!--  -->
 
@@ -123,6 +123,8 @@ Service:
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
+        android:clickable="true"
+        android:linksClickable="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/cmd_view" />
 
