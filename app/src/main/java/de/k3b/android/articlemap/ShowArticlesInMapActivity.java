@@ -242,7 +242,7 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
             if (!GeoPointDto.isEmpty(geoPointFromIntent)) {
                 this.geoConfig.demoUri = geoPointFromIntent;
             }
-            progressMessage.message("Using " + toString(geoPointFromIntent));
+            progressMessage.message("Using " + toString(this.geoConfig.demoUri));
         }
     }
 
