@@ -1,4 +1,5 @@
 # AndroidGeo2ArticlesMap
+
 Plugin for [Location Map Viewer](https://f-droid.org/en/packages/de.k3b.android.locationMapViewer): 
 Show articles from Wikipedia™ or Wikivoyage™ near a given geographic location in an interactive map.
 
@@ -9,6 +10,12 @@ and you want to know: what is near this place that has an article in [wikipedia]
 In your navigation app select "view in external app" (or "send location to" or "share location with" or ...) 
 choose "Show Articles in Map" and you will get a map with marks for articles. If you click on a mark you get
 a small popup with the article summary and a link to the wikipedia article.  
+
+![](https://raw.githubusercontent.com/k3b/AndroidGeo2ArticlesMap/main/fastlane/metadata/android/en-US/images/phoneScreenshots/0-ageo2ArticleMap-map-popup.png)
+
+Some en.wikipedia.org articles from Berlin, Germany 
+
+--- 
 
 You can get geo-infos from these opensource apps
 
@@ -22,6 +29,41 @@ You can get geo-infos from these opensource apps
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
      alt="Get it on F-Droid"
      height="80">](https://f-droid.org/packages/de.k3b.android.geo2articlesmap/)
+
+## Usage.
+
+If you select view + "Show Articles in Map" from a geo app you will see the settings page:
+
+![](https://raw.githubusercontent.com/k3b/AndroidGeo2ArticlesMap/main/fastlane/more_images/91-ageo2ArticleMap-settings.png)
+
+* (6) In the **message area** you see the geo-location "Berlin Germany (52.51,13.35)" where the articles are near by.
+* (1) shows the **current service** "en.wikipedia.org" where the geo-data is taken from. You can 
+  * (1) edit the service or 
+  * use (2) to pick one from the **history** of the last used services or 
+  * (3) pick one of the 93 bigger **known services**
+* (4) If you enable **"Load symbols/images"** you get an image belonging for every article (if available in wikipedia) that will be shown in the map and the popup.
+  * Loading images will slow down coloading the articles and increase the used internet bandwidth:
+* (5) If you enable **"Do not show this dialog again"** then getting articles will be done without this settings dialog.
+* (7) If you press the **"View"** button you will seel in the (6) **message area** what the app does
+  * Downloading...
+  * Analysing...
+  * Saving to file ...
+* Finally you get the result.
+
+--- 
+
+![](https://raw.githubusercontent.com/k3b/AndroidGeo2ArticlesMap/main/fastlane/metadata/android/en-US/images/phoneScreenshots/2-ageo2ArticleMap-pick-service.png)
+
+(3) pick one of the 93 bigger **known services**
+
+--- 
+
+![](https://raw.githubusercontent.com/k3b/AndroidGeo2ArticlesMap/main/fastlane/metadata/android/en-US/images/phoneScreenshots/3-ageo-service-history.png)
+
+(2) to pick one from the **history** of the last used services or
+
+--- 
+
 
 ## Technical Description 
 
