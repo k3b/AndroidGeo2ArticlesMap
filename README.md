@@ -19,6 +19,10 @@ You can get geo-infos from these opensource apps
 * Share your current position [LocationShare](https://f-droid.org/packages/ca.cmetcalfe.locationshare) or [My Position](https://f-droid.org/packages/net.mypapit.mobile.myposition)
 * and probably many others.......
 
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/de.k3b.android.geo2articlesmap/)
+
 ## Technical Description 
 
 Technically speaking the AndroidGeo2ArticlesMap app 
