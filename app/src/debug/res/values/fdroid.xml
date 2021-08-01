@@ -42,7 +42,7 @@ This app adds the option *Show Articles in Map* to any app that can shown/send/s
 It hooks into the android system, asks wikipedia and shows the results in [Location Map Viewer](https://f-droid.org/packages/de.k3b.android.locationMapViewer)
 (or any other installed app that understands the format 'kmz').
 
-*Location Map Viewer* shows a map with bubbles (or article-icons if available) for every wikipedia article found.
+*Location Map Viewer* shows a map with bubbles (or article-icons if enabled/available) for every wikipedia article found.
 
 If you click on a bubble you get a popup with a short article description and a button that links to the full article.
 
