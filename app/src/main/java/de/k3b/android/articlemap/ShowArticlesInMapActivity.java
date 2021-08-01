@@ -72,6 +72,7 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
         private final HistoryEditText mHistory;
         private final EditText editService;
         private final CheckBox chkHide;
+        private final CheckBox chkWithSymbols;
         private final TextView lblMessage;
 
         private Gui() {
@@ -81,6 +82,8 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
             cmdService.setOnClickListener(v -> showLanguagesPicker());
 
             chkHide = findViewById(R.id.chk_hide);
+            chkWithSymbols = findViewById(R.id.chk_with_symbols);
+
             mHistory = new HistoryEditText(ShowArticlesInMapActivity.this, new int[] {
                     R.id.cmd_service_history} ,
                     editService );
@@ -90,13 +93,14 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
             Button cmdShare = findViewById(R.id.cmd_share);
             cmdShare.setOnClickListener(v -> onStart(Intent.ACTION_SEND));
             Button cmdCancel = findViewById(R.id.cmd_cancel);
-            cmdCancel.setOnClickListener(v -> finish());
+            cmdCancel.setOnClickListener(v -> cancel());
             lblMessage = findViewById(R.id.lbl_message);
         }
 
         private Gui save(GeoConfig geoConfig) {
             geoConfig.serviceName = editService.getText().toString();
             geoConfig.showSettings = !chkHide.isChecked();
+            geoConfig.withSymbols = chkWithSymbols.isChecked();
             mHistory.saveHistory();
             return this;
         }
@@ -107,6 +111,7 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
             if (geoConfig.serviceName != null) {
                 editService.setText(geoConfig.serviceName);
             }
+            chkWithSymbols.setChecked(geoConfig.withSymbols);
             chkHide.setChecked(!geoConfig.showSettings);
             return this;
         }
@@ -390,6 +395,11 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
     private void save() {
         gui.save(geoConfig);
         geoConfig.save(this);
+    }
+
+    private void cancel() {
+        save();
+        finish();
     }
 
     private void showLanguagesPicker() {

@@ -30,19 +30,24 @@ public class GeoConfig {
     public final String USER_AGENT = "AndroidGeo2ArticlesMap/1.0 (https://github.com/k3b/AndroidGeo2ArticlesMap)";
     public final String outFileExtension = ".kmz";
     public final String outMimeType = "application/vnd.google-earth.kmz";
+
     public boolean showSettings = true; // true always show settings before query
+    public boolean withSymbols = false; // true: also load Images/Symbols (slow, extra internet bandwitdh)
 
-    public final int maxcount = 25;
+    public final int maxcount = 25; // miximaum number of articles to search for
 
-    public GeoPointDto demoUri = new GeoPointDto().setLatLon(52.51,13.35)
+    public GeoPointDto demoUri = new GeoPointDto()
+            .setLatLon(52.51,13.35)
             .setName("Berlin, Germany");
+
     public boolean inDemoMode = false;
     public String action = Intent.ACTION_VIEW;
-    public boolean withSymbols = true;
 
     public GeoConfig(Context context) {
         SharedPreferences prefsInstance = PreferenceManager
                 .getDefaultSharedPreferences(context);
+
+        withSymbols = prefsInstance.getBoolean("withSymbols", withSymbols);
         showSettings = prefsInstance.getBoolean("showSettings", showSettings);
         serviceName = prefsInstance.getString("serviceName", serviceName);
         inDemoMode = prefsInstance.getBoolean("inDemoMode", inDemoMode);
@@ -52,6 +57,8 @@ public class GeoConfig {
     public void save(Context context) {
         SharedPreferences.Editor edit = PreferenceManager
                 .getDefaultSharedPreferences(context).edit();
+
+        edit.putBoolean("withSymbols", withSymbols);
         edit.putBoolean("showSettings", showSettings);
         edit.putString("serviceName", serviceName);
         edit.putBoolean("inDemoMode", inDemoMode);

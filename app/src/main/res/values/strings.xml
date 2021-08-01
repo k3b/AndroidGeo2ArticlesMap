@@ -23,6 +23,7 @@
 
     <string name="lbl_service">Service:</string>
     <string name="hint_edit_service">Enter or select Service</string>
+    <string name="lbl_with_symbols">Load symbols/images.<br/> (Slow, needs more internet bandwidth)</string>
     <string name="lbl_donot_show_this_dialog_again">Do not show this dialog again</string>
     <string name="view">View</string>
     <string name="share">Share</string>

@@ -8,8 +8,9 @@
 Show articles near
 
 Service:
-[de.wikipedia.org_____] V [...]
+[de.wikipedia.org_____] [V] […]
 
+[X] Load Symbols/Images
 [X] Do not show this dialog again
 
 [View] [Cancel]
@@ -72,6 +73,17 @@ Service:
     <!--  -->
 
     <CheckBox
+        android:id="@+id/chk_with_symbols"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:minHeight="48dp"
+        android:text="@string/lbl_with_symbols"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_service" />
+
+    <CheckBox
         android:id="@+id/chk_hide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -80,7 +92,7 @@ Service:
         android:minHeight="48dp"
         android:text="@string/lbl_donot_show_this_dialog_again"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_service" />
+        app:layout_constraintTop_toBottomOf="@+id/chk_with_symbols" />
 
     <!--  -->
 
