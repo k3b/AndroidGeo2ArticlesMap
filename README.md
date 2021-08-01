@@ -26,6 +26,10 @@ You can get geo-infos from these opensource apps
 * Share your current position [LocationShare](https://f-droid.org/packages/ca.cmetcalfe.locationshare) or [My Position](https://f-droid.org/packages/net.mypapit.mobile.myposition)
 * and probably many others.......
 
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/de.k3b.android.geo2articlesmap/)
+
 ## Usage.
 
 If you select view + "Show Articles in Map" from a geo app you will see the settings page:
@@ -59,6 +63,7 @@ If you select view + "Show Articles in Map" from a geo app you will see the sett
 (2) to pick one from the **history** of the last used services or
 
 --- 
+
 
 ## Technical Description 
 
