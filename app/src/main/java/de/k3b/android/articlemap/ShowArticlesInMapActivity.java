@@ -89,9 +89,11 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
                     editService );
 
             Button cmdView = findViewById(R.id.cmd_view);
-            cmdView.setOnClickListener(v -> onStart(Intent.ACTION_VIEW));
+            cmdView.setOnClickListener(v -> onStartQuery());
+            /*
             Button cmdShare = findViewById(R.id.cmd_share);
-            cmdShare.setOnClickListener(v -> onStart(Intent.ACTION_SEND));
+            cmdShare.setOnClickListener(v -> onStartQuery());
+             */
             Button cmdCancel = findViewById(R.id.cmd_cancel);
             cmdCancel.setOnClickListener(v -> cancel());
             lblMessage = findViewById(R.id.lbl_message);
@@ -232,7 +234,7 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
         GeoPointDto geoPointFromIntent = getGeoPointDtoFromIntent(getIntent());
 
         if (!geoConfig.showSettings && geoPointFromIntent != null && !GeoPointDto.isEmpty(geoPointFromIntent)) {
-            queryDataFromArticleServer(geoPointFromIntent, false, getIntent().getAction());
+            queryDataFromArticleServer(geoPointFromIntent, false);
         } else {
             setContentView(R.layout.activity_choose_url);
             gui = new Gui().load(geoConfig);
@@ -246,9 +248,8 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
         }
     }
 
-    private void queryDataFromArticleServer(GeoPointDto geoPointFromIntent, boolean inDemoMode, String action) {
+    private void queryDataFromArticleServer(GeoPointDto geoPointFromIntent, boolean inDemoMode) {
         geoConfig.inDemoMode = inDemoMode;
-        geoConfig.action = action;
         String name = createFileName(geoConfig.serviceName, geoPointFromIntent.getLatitude(), geoPointFromIntent.getLongitude());
         File outFile = new File(
                 createSharedOutDir(name),
@@ -275,15 +276,12 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
             // success: forward same Action/Mime to final kmz receiver
 
             Uri outUri = createSharedUri(result.outFile);
-            Intent newIntent = new Intent(geoConfig.action)
+
+            Intent newIntent = new Intent(Intent.ACTION_VIEW)
                     .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             newIntent.putExtra(Intent.EXTRA_TITLE, geoConfig.serviceName);
-            if (Intent.ACTION_SEND.compareTo(geoConfig.action) == 0) {
-                newIntent.putExtra(Intent.EXTRA_STREAM, outUri);
-            } else {
-                // ACTION_SENDTO or ACTION_VIEW
-                newIntent.setDataAndTypeAndNormalize(outUri, geoConfig.outMimeType);
-            }
+
+            newIntent.setDataAndTypeAndNormalize(outUri, geoConfig.outMimeType);
 
             try {
                 // start the image capture Intent
@@ -376,7 +374,7 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
             GeoPointDto geoPointFromIntent = getGeoPointDtoFromIntent(getIntent());
 
             if (geoPointFromIntent != null) {
-                queryDataFromArticleServer(geoPointFromIntent, false, Intent.ACTION_VIEW);
+                queryDataFromArticleServer(geoPointFromIntent, false);
             } else {
                 finish();
             }
@@ -387,9 +385,9 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
 
     }
 
-    private void onStart(String action) {
+    private void onStartQuery() {
         save();
-        queryDataFromArticleServer(geoConfig.demoUri, true, action);
+        queryDataFromArticleServer(geoConfig.demoUri, true);
     }
 
     private void save() {

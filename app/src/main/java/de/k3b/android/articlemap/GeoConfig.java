@@ -41,7 +41,6 @@ public class GeoConfig {
             .setName("Berlin, Germany");
 
     public boolean inDemoMode = false;
-    public String action = Intent.ACTION_VIEW;
 
     public GeoConfig(Context context) {
         SharedPreferences prefsInstance = PreferenceManager
