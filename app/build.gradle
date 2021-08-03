@@ -12,9 +12,10 @@ android {
         // v1.0 (1) initial release
         // v1.1 (2) fixed gradle wrapper checksum
         // v1.3 (3) fixed fastlane description
-        // v1.4 (4) removed obsolete write permissions not neccessary since android-4.4 (api 19)
-        versionCode 4
-        versionName 'v1.4'
+        // v1.4 (4) 2021-08-01: removed obsolete write permissions not neccessary since android-4.4 (api 19)
+        // v1.5 (5) 2021-08-??: Setting: option to (not) Load symbols/images; Bug Fixes
+        versionCode 5
+        versionName 'v1.5'
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }

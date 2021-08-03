@@ -1,3 +1,4 @@
-* #1: Fixe layout: service buttons may overlap
+* #1: Fixed layout: service buttons did overlap
 * #3: fixed errorhandling: servicehistory entry not removed when no internet.
-* #4: Setting: Load symbols/images: Finetune Speed/Internetbandwidth
+* #6: fixed View/Send/SendTo handling when calling LocationMapViewer.
+* #4: Setting: (Not) Load symbols/images to Finetune Speed/Internetbandwidth
