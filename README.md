@@ -36,15 +36,16 @@ If you select view + "Show Articles in Map" from a geo app you will see the sett
 
 ![](https://raw.githubusercontent.com/k3b/AndroidGeo2ArticlesMap/main/fastlane/more_images/91-ageo2ArticleMap-settings.png)
 
-* (6) In the **message area** you see the geo-location "Berlin Germany (52.51,13.35)" where the articles are near by.
+* (6) In the **message area** you see the current geo-location "Berlin Germany (52.51,13.35)" where the articles are near by.
 * (1) shows the **current service** "en.wikipedia.org" where the geo-data is taken from. You can 
   * (1) edit the service or 
   * use (2) to pick one from the **history** of the last used services or 
   * (3) pick one of the 93 bigger **known services**
 * (4) If you enable **"Load symbols/images"** you get an image belonging for every article (if available in wikipedia) that will be shown in the map and the popup.
-  * Loading images will slow down coloading the articles and increase the used internet bandwidth:
+  * Loading images will slow downloading the articles and increase the used internet bandwidth.
 * (5) If you enable **"Do not show this dialog again"** then getting articles will be done without this settings dialog.
-* (7) If you press the **"View"** button you will seel in the (6) **message area** what the app does
+* (7) If you press the **"View"** button the app will start loading data from current service (1) "en.wikipedia.org" that is near the current location (6) (Berlin Germany (52.51,13.35).
+  * In the (6) **message area** you can see what the app does
   * Downloading...
   * Analysing...
   * Saving to file ...
