@@ -1,7 +1,8 @@
 <p>Note: You must also install <a href="https://f-droid.org/packages/de.k3b.android.locationMapViewer">Location Map Viewer</a> to display the results.</p>
 <p>This app adds the option <em>Show Articles in Map</em> to any app that can shown/send/share a geo location or <strong>geo-uri</strong> .</p>
-<p>It hooks into the android system, asks wikipedia and shows the results in <a href="https://f-droid.org/packages/de.k3b.android.locationMapViewer">Location Map Viewer</a>
-(or any other installed app that understands the format 'kmz').</p>
+<p>This app hooks into the android system to intercept "view geo-uri". When getting a geo-uri it asks wikipedia and shows the results in
+<a href="https://f-droid.org/packages/de.k3b.android.locationMapViewer">Location Map Viewer</a>
+(or in any other installed app that understands the format 'kmz').</p>
 <p><em>Location Map Viewer</em> shows a map with bubbles (or article-icons if enabled/available) for every wikipedia article found.</p>
 <p>If you click on a bubble you get a popup with a short article description and a button that links to the full article.</p>
 <p>Here are some f-droid apps that are compatible with <em>Show Articles in Map</em></p>
