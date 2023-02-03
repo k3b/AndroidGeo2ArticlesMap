@@ -61,7 +61,7 @@ If you select view + "Show Articles in Map" from a geo app you will see the sett
 
 ![](https://raw.githubusercontent.com/k3b/AndroidGeo2ArticlesMap/main/fastlane/metadata/android/en-US/images/phoneScreenshots/3-ageo-service-history.png)
 
-(2) to pick one from the **history** of the last used services or
+(2) to pick one from the **history** of the last used services
 
 --- 
 
