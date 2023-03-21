@@ -1,11 +1,15 @@
 # AndroidGeo2ArticlesMap
 
 Plugin for [Location Map Viewer](https://f-droid.org/en/packages/de.k3b.android.locationMapViewer): 
-Show articles from Wikipedia™ or Wikivoyage™ near a given geographic location in an interactive map.
+Show articles near a given geographic location in an interactive map from 
+
+* Wikipedia™ (The Free Encyclopedia that anyone can edit) or 
+* Wikivoyage™ (Free travel guide that anyone can edit) or 
+* Wikimedia™ (Free Fotos, Vidio, Audo collections) or 
+* Wikidata™ (knowledge base that anyone can edit).
 
 Uscase: Suppose you are going on holiday. Your navigation app shows you a geo-map with your hotel
-and you want to know: what is near this place that has an article in [wikipedia](https://en.wikipedia.org) 
-( or [wikivoyage](https://en.wikivoyage.org) ). 
+and you want to know: what is near this place that has an article in [wikipedia](https://en.wikipedia.org). 
 
 In your navigation app select "view in external app" (or "send location to" or "share location with" or ...) 
 choose "Show Articles in Map" and you will get a map with marks for articles. If you click on a mark you get
@@ -55,7 +59,7 @@ If you select view + "Show Articles in Map" from a geo app you will see the sett
 
 ![](https://raw.githubusercontent.com/k3b/AndroidGeo2ArticlesMap/main/fastlane/metadata/android/en-US/images/phoneScreenshots/2-ageo2ArticleMap-pick-service.png)
 
-(3) pick one of the 93 bigger **known services**
+(3) pick one of the 95 bigger **known services**
 
 --- 
 
@@ -81,7 +85,7 @@ Technically speaking the AndroidGeo2ArticlesMap app
 [Location Map Viewer](https://github.com/k3b/LocationMapViewer) 
 Copyright (c) by k3b, Licensed under GPL, Version 3.0 or later.
 
-Wikipedia and Wikivoyage are  [trademarks of the Wikimedia Foundation](https://foundation.wikimedia.org/wiki/Wikimedia_trademarks)
+Wikipedia, Wikimedia, Wikidata and Wikivoyage are  [trademarks of the Wikimedia Foundation](https://foundation.wikimedia.org/wiki/Wikimedia_trademarks)
 
 -----
 

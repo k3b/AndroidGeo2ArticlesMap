@@ -22,6 +22,7 @@ package de.k3b.android.articlemap;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
+import android.content.ClipData;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -89,10 +90,10 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
                     editService );
 
             Button cmdView = findViewById(R.id.cmd_view);
-            cmdView.setOnClickListener(v -> onStartQuery());
+            cmdView.setOnClickListener(v -> onStartQuery(false));
             /*
             Button cmdShare = findViewById(R.id.cmd_share);
-            cmdShare.setOnClickListener(v -> onStartQuery());
+            cmdShare.setOnClickListener(v -> onStartQuery(true));
              */
             Button cmdCancel = findViewById(R.id.cmd_cancel);
             cmdCancel.setOnClickListener(v -> cancel());
@@ -131,6 +132,8 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
                     includeService(
                             languages.get("simple_v"), // last in list
                             languages.get("simple_p"),
+                            languages.get("en_m"),
+                            languages.get("en_d"),
                             languages.get("en_v"),
                             languages.get("en_p"),
                             languages.get(language + "_v"),
@@ -196,6 +199,10 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
     }
 
     class GeoLoadTask extends AsyncTask<GeoPointDto, Void, ArticlesDownloadService.Result> {
+        private final boolean useActionSend;
+        public GeoLoadTask(boolean useActionSend) {
+            this.useActionSend = useActionSend;
+        }
 
         @Override
         protected ArticlesDownloadService.Result doInBackground(GeoPointDto... arg0) {
@@ -222,7 +229,7 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
 
         @Override
         protected void onPostExecute(ArticlesDownloadService.Result result) {
-            showResult(result);
+            showResult(result, useActionSend);
         }
     }
 
@@ -234,7 +241,7 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
         GeoPointDto geoPointFromIntent = getGeoPointDtoFromIntent(getIntent());
 
         if (!geoConfig.showSettings && geoPointFromIntent != null && !GeoPointDto.isEmpty(geoPointFromIntent)) {
-            queryDataFromArticleServer(geoPointFromIntent, false);
+            queryDataFromArticleServer(geoPointFromIntent, false, false);
         } else {
             setContentView(R.layout.activity_choose_url);
             gui = new Gui().load(geoConfig);
@@ -248,7 +255,7 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
         }
     }
 
-    private void queryDataFromArticleServer(GeoPointDto geoPointFromIntent, boolean inDemoMode) {
+    private void queryDataFromArticleServer(GeoPointDto geoPointFromIntent, boolean inDemoMode, boolean useActionSend) {
         geoConfig.inDemoMode = inDemoMode;
         String name = createFileName(geoConfig.serviceName, geoPointFromIntent.getLatitude(), geoPointFromIntent.getLongitude());
         File outFile = new File(
@@ -256,12 +263,12 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
                 name + geoConfig.outFileExtension);
         createSharedUri(outFile);
 
-        new GeoLoadTask().execute(geoPointFromIntent);
+        new GeoLoadTask(useActionSend).execute(geoPointFromIntent);
     }
 
     /** called in gui thread, after receiving answer from wikipedia */
     @SuppressLint("StringFormatMatches")
-    private void showResult(ArticlesDownloadService.Result result) {
+    private void showResult(ArticlesDownloadService.Result result, boolean useActionSend) {
 
         if (result.errorMessageId != 0) {
             showErrorMessage(getString(result.errorMessageId, geoConfig.serviceName, result.outFile, toString(geoConfig.demoUri),""));
@@ -277,11 +284,24 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
 
             Uri outUri = createSharedUri(result.outFile);
 
-            Intent newIntent = new Intent(Intent.ACTION_VIEW)
-                    .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            newIntent.putExtra(Intent.EXTRA_TITLE, geoConfig.serviceName);
+            Intent newIntent;
+            if (useActionSend) {
+                // https://developer.android.com/reference/android/content/Intent#ACTION_SEND
+                newIntent = new Intent(Intent.ACTION_SEND)
+                        .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        .setType("*/*")
+                        .putExtra(Intent.EXTRA_TITLE, geoConfig.serviceName)
+                        .putExtra(Intent.EXTRA_STREAM, outUri);
+                newIntent.setClipData(ClipData.newRawUri("", outUri));
 
-            newIntent.setDataAndTypeAndNormalize(outUri, geoConfig.outMimeType);
+                newIntent = Intent.createChooser(newIntent, geoConfig.serviceName);
+            } else {
+                // https://developer.android.com/reference/android/content/Intent#ACTION_VIEW
+                newIntent = new Intent(Intent.ACTION_VIEW)
+                        .setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                        .putExtra(Intent.EXTRA_TITLE, geoConfig.serviceName)
+                        .setDataAndTypeAndNormalize(outUri, geoConfig.outMimeType);
+            }
 
             try {
                 // start the image capture Intent
@@ -367,14 +387,18 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         save();
         int itemId = menuItem.getItemId();
+        boolean isCmdShare = itemId == R.id.cmd_share;
         if (itemId == R.id.cmd_cancel_pick) {
             finish();
             return true;
-        } else if (itemId == R.id.cmd_ok) {
+        } else if (itemId == R.id.cmd_ok || isCmdShare) {
             GeoPointDto geoPointFromIntent = getGeoPointDtoFromIntent(getIntent());
 
+            if (geoPointFromIntent == null) {
+                geoPointFromIntent = new GeoConfig(this).demoUri;
+            }
             if (geoPointFromIntent != null) {
-                queryDataFromArticleServer(geoPointFromIntent, false);
+                queryDataFromArticleServer(geoPointFromIntent, false, isCmdShare);
             } else {
                 finish();
             }
@@ -385,9 +409,9 @@ public class ShowArticlesInMapActivity extends PermissionBaseActivity {
 
     }
 
-    private void onStartQuery() {
+    private void onStartQuery(boolean useActionSend) {
         save();
-        queryDataFromArticleServer(geoConfig.demoUri, true);
+        queryDataFromArticleServer(geoConfig.demoUri, true, useActionSend);
     }
 
     private void save() {

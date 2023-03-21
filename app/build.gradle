@@ -14,8 +14,9 @@ android {
         // v1.3 (3) fixed fastlane description
         // v1.4 (4) 2021-08-01: removed obsolete write permissions not neccessary since android-4.4 (api 19)
         // v1.5 (5) 2021-08-??: Setting: option to (not) Load symbols/images; Bug Fixes
-        versionCode 5
-        versionName 'v1.5'
+        // v1.6 (6) 2023-03-21: Add support for Wikimedia (Fotos) and Wikidata (Knowledgebase) and Send
+        versionCode 6
+        versionName 'v1.6'
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
@@ -54,8 +55,8 @@ dependencies {
     implementation 'org.slf4j:slf4j-api:1.7.7@jar'
     implementation 'org.slf4j:slf4j-simple:1.7.7'
     // implementation project(path: ':k3b-geoHelper')
-    implementation 'com.github.k3b:k3b-geoHelper:v1.1.9'
-    // implementation 'com.github.k3b:k3b-geoHelperAndroid:v1.1.9'
+    implementation 'com.github.k3b:k3b-geoHelper:v1.1.12'
+    // implementation 'com.github.k3b:k3b-geoHelperAndroid:v1.1.12'
 
     implementation 'commons-io:commons-io:2.6'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'

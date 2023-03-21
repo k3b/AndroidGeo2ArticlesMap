@@ -1,1 +1,5 @@
---- todo ---
+v1.6 (6)
+
+* #7 Added support for 📷 commons.wikimedia.org (i.e. gallery of photos)
+* #8 Added support for 🔬 www.wikidata.org (Knowledgebase)
+* #9 Added button "share" (i.e. share generated kmz to "save as local file")

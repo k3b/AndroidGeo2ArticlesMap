@@ -21,6 +21,9 @@
  -->
 <!-- menue of gallery for modus pick/getContent -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/cmd_share" android:title="@string/share"
+        android:icon="@android:drawable/ic_menu_share"
+        android:orderInCategory="2" android:showAsAction="always" android:visible="true" />
     <item android:id="@+id/cmd_ok" android:title="@android:string/ok"
         android:icon="@drawable/ic_action_accept"
         android:orderInCategory="2" android:showAsAction="always" android:visible="true" />

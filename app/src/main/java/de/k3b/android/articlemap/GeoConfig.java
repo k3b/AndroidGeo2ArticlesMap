@@ -27,7 +27,7 @@ import de.k3b.geo.api.GeoPointDto;
 
 public class GeoConfig {
     public String serviceName = null; // i.e. "en.wikipedia.org";
-    public final String USER_AGENT = "AndroidGeo2ArticlesMap/1.0 (https://github.com/k3b/AndroidGeo2ArticlesMap)";
+    public final String USER_AGENT = "AndroidGeo2ArticlesMap/1.1 (https://github.com/k3b/AndroidGeo2ArticlesMap)";
     public final String outFileExtension = ".kmz";
     public final String outMimeType = "application/vnd.google-earth.kmz";
 

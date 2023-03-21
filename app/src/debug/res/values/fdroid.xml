@@ -39,7 +39,9 @@ Note: You must also install [Location Map Viewer](https://f-droid.org/packages/d
 
 This app adds the option *Show Articles in Map* to any app that can shown/send/share a geo location or **geo-uri** .
 
-This app hooks into the android system to intercept "view geo-uri". When getting a geo-uri it asks wikipedia and shows the results in
+This app hooks into the android system to intercept "view geo-uri". When getting a geo-uri it asks
+encyclopedia *wikipedia*  (or travelguide *wikivoyage* or knowledgebase *wikidata* or photogallery *wikimedia*)
+and shows the results in
 [Location Map Viewer](https://f-droid.org/packages/de.k3b.android.locationMapViewer)
 (or in any other installed app that understands the format 'kmz').
 

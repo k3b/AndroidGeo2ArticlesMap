@@ -30,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
@@ -40,16 +39,18 @@ public class LanguageDefinition implements Comparable<LanguageDefinition> {
     private final String key;
     private final String name;
 
+    // ie new LanguageDefinition("en_d","Scientific Data 🔬")
     public LanguageDefinition(String key, String value) {
-        String languageID = getLanguage(key);
-
-        this.url = languageID + (isWikipedia(key) ? ".wikipedia.org" : ".wikivoyage.org");
+        this.url = getUrl(key);
         this.key = key;
-        this.name = languageID + " " + value + " " + this.getUrl();
+        this.name = getLanguage(key) + " " + value + " " + this.url;
     }
 
-    private boolean isWikipedia(String key) {
-        return !key.endsWith("_v");
+    @NonNull
+    private String getUrl(String key) {
+        if (key.endsWith("_d")) return "www.wikidata.org";
+        if (key.endsWith("_m")) return "commons.wikimedia.org";
+        return getLanguage(key) + (key.endsWith("_v") ? ".wikivoyage.org" : ".wikipedia.org");
     }
 
     private String getLanguage(String key) {
@@ -73,7 +74,6 @@ public class LanguageDefinition implements Comparable<LanguageDefinition> {
     }
 
     public static Map<String, LanguageDefinition> getLanguages(InputStream in) throws IOException {
-        String language = Locale.getDefault().getLanguage();
         Properties properties = new Properties();
         // note: Properties standard use iso-8859-1. However this app uses utf8
         properties.load(new InputStreamReader(in, StandardCharsets.UTF_8));

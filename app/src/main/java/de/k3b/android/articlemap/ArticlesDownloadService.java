@@ -106,7 +106,7 @@ public class ArticlesDownloadService extends DownloadGpxKmlZipWithSymbolsService
     }
 
     private Result getGeoPointInfos(Object lat, Object lon, boolean withSymbols) {
-        String urlString = this.getQueryGeoUrlString(lat, lon, withSymbols);
+        String urlString = this.getQueryGeoUrlString(lat, lon, withSymbols, serviceName.contains(".wikidata."));
         String message = "downloading articles from " + serviceName;
         Log.i(TAG, message + " using " + urlString);
         if (progressMessage != null) {
@@ -116,7 +116,7 @@ public class ArticlesDownloadService extends DownloadGpxKmlZipWithSymbolsService
         try (InputStream inputStream = this.getInputStream(urlString) ){
             GpxReader<IGeoPointInfo> parser = new GpxReader<>();
             message = "analysing articles ...";
-                    Log.d(TAG,message);
+            Log.d(TAG,message);
             if (progressMessage != null) {
                 progressMessage.message(message);
             }
@@ -125,7 +125,7 @@ public class ArticlesDownloadService extends DownloadGpxKmlZipWithSymbolsService
             return new Result(null, points, 0, null);
         } catch (Exception ex) {
             message = "cannot read from '" + this.serviceName + "' using '" + urlString + "'" ;
-                    Log.e(TAG, message,ex);
+            Log.e(TAG, message,ex);
             if (progressMessage != null) {
                 progressMessage.message(message);
             }
@@ -156,8 +156,13 @@ public class ArticlesDownloadService extends DownloadGpxKmlZipWithSymbolsService
         return result;
     }
 
-    /** api creates url that encodes what we want to get from wikipedia  */
-    private String getQueryGeoUrlString(Object lat, Object lon, boolean withSymbols) {
+    /** api creates url that encodes what we want to get from wikipedia
+     *
+     * examples
+     * * https://de.wikivoyage.org/w/api.php?action=query&format=xml&prop=coordinates|info|pageimages|extracts&inprop=url&piprop=thumbnail&generator=geosearch&ggscoord=28.12722|-15.43139&ggsradius=10000&ggslimit=5&pilimit=5&exsentences=2&explaintext&exintro
+     * * https://www.wikidata.org/w/api.php?action=query&format=xml&prop=entityterms|coordinates|info&inprop=url&generator=geosearch&ggscoord=36.45284|28.22016&ggsradius=10000&ggslimit=25
+     * */
+    private String getQueryGeoUrlString(Object lat, Object lon, boolean withSymbols, boolean fromWikiData) {
         // see https://www.mediawiki.org/wiki/Special:MyLanguage/API:Main_page
         StringBuilder urlString = new StringBuilder().append("https://")
                 .append(serviceName)
@@ -166,11 +171,17 @@ public class ArticlesDownloadService extends DownloadGpxKmlZipWithSymbolsService
                 "&format=xml" +
                 "&prop=coordinates|info");
 
-        if (withSymbols) {
-            urlString.append("|pageimages");
+        if (fromWikiData) {
+            urlString.append("|entityterms");
+        } else {
+            if (withSymbols) {
+                urlString.append("|pageimages");
+            }
+
+            urlString.append("|extracts");
         }
 
-        urlString.append("|extracts" +
+        urlString.append(
                 "&inprop=url" +
                 "&generator=geosearch" +
                 "&ggscoord=")
@@ -178,15 +189,17 @@ public class ArticlesDownloadService extends DownloadGpxKmlZipWithSymbolsService
                 .append("&ggsradius=").append(radius)
                 .append("&ggslimit=").append(maxcount);
 
-        if (withSymbols) {
-            urlString.append("&piprop=thumbnail")
-                    .append("&pithumbsize=").append(GeoConfig.THUMBSIZE)
-                    .append("&pilimit=").append(maxcount);
-        }
+        if (!fromWikiData) {
+            if (withSymbols) {
+                urlString.append("&piprop=thumbnail")
+                        .append("&pithumbsize=").append(GeoConfig.THUMBSIZE)
+                        .append("&pilimit=").append(maxcount);
+            }
 
-        urlString
-                // prop extracts: 2Sentenses in non-html before TOC
-                .append("&exsentences=2&explaintext&exintro");
+            urlString
+                    // prop extracts: 2Sentenses in non-html before TOC
+                    .append("&exsentences=2&explaintext&exintro");
+        }
         return urlString.toString();
     }
 
